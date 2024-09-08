@@ -1,3 +1,5 @@
+from wafunextr.token_type import TokenType
+
 Digit = '[0-9]'
 HexDigit = '[0-9a-fA-F]'
 Num = Digit + '(_?' + Digit + ')*'
@@ -130,41 +132,41 @@ INT_INSTR = '(' + I32_CONV + ')' + '|' + '(' + I64_CONV + ')' + '|' + '(' + INT_
 
 token_patterns = {
     # Separators
-    'SPACE': r'[ \t\r\n]',
-    'COMMENT': r'\(;' + '.*?' + r';\)' + '|' + ';;' + '.*?' + r'\n',
-    'LPAR': r'\(',
-    'RPAR': r'\)',
+    TokenType.WHITESPACE: r'[ \t\r\n]',
+    TokenType.COMMENT: r'\(;.*?;\)' + '|' + r';;.*?\n',
+    TokenType.LPAR: r'\(',
+    TokenType.RPAR: r'\)',
 
     # Operations
-    'UNREACHABLE': 'unreachable',
-    'NOP': 'nop',
-    'BR': 'br',
-    'BR_IF': 'br_if',
-    'RETURN': 'return',
-    'CALL': 'call',
-    'DROP': 'drop',
-    'SELECT': 'select',
-    'LOCAL_INSTR': 'local' + r'\.(' + 'get' + '|' + 'set' + '|' + 'tee' ')',
-    'CONST_INSTR': NXX + r'\.const',
-    'INT_INSTR': INT_INSTR,
-    'FLOAT_INSTR': FLOAT_INSTR,
+    TokenType.UNREACHABLE: 'unreachable',
+    TokenType.NOP: 'nop',
+    TokenType.BR: 'br',
+    TokenType.BR_IF: 'br_if',
+    TokenType.RETURN: 'return',
+    TokenType.CALL: 'call',
+    TokenType.DROP: 'drop',
+    TokenType.SELECT: 'select',
+    TokenType.LOCAL_INSTR: 'local' + r'\.(' + 'get' + '|' + 'set' + '|' + 'tee' ')',
+    TokenType.CONST_INSTR: '(' + NXX + ')' + r'\.const',
+    TokenType.INT_INSTR: INT_INSTR,
+    TokenType.FLOAT_INSTR: FLOAT_INSTR,
 
     # Keywords
-    'MODULE': 'module',
-    'TYPE': 'type',
-    'FUNC': 'func',
-    'PARAM': 'param',
-    'RESULT': 'result',
-    'LOCAL': 'local',
-    'BLOCK': 'block',
-    'LOOP': 'loop',
-    'IF': 'if',
-    'THEN': 'then',
-    'ELSE': 'else',
+    TokenType.MODULE: 'module',
+    TokenType.TYPE: 'type',
+    TokenType.FUNC: 'func',
+    TokenType.PARAM: 'param',
+    TokenType.RESULT: 'result',
+    TokenType.LOCAL: 'local',
+    TokenType.BLOCK: 'block',
+    TokenType.LOOP: 'loop',
+    TokenType.IF: 'if',
+    TokenType.THEN: 'then',
+    TokenType.ELSE: 'else',
 
     # Values
-    'NAME': Name,
-    'NAT': Nat,
-    'NUM': '(' + Int + ')' + '|' + '(' + Float + ')',
-    'NUM_TYPE': NXX,
+    TokenType.NAME: Name,
+    TokenType.NUM: '(' + Int + ')' + '|' + '(' + Float + ')',
+    TokenType.NAT: Nat,
+    TokenType.NUM_TYPE: NXX,
 }
