@@ -1,4 +1,4 @@
-from wafunextr.token_type import TokenType
+from wafunextr.tokenizer.token_type import TokenType
 
 Digit = '[0-9]'
 HexDigit = '[0-9a-fA-F]'
