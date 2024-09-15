@@ -36,10 +36,12 @@ def tokenize(text: str, skip_ws: bool = True, skip_comments: bool = True) -> lis
 
         recognized_index = match.end()
 
-        line += value.count('\n')
-        act_newline_index = value.rfind('\n')
-        if act_newline_index != -1:
-            last_newline_index = match.start() + act_newline_index
+        if token_type in {TokenType.WHITESPACE, TokenType.COMMENT}:
+            line += value.count('\n')
+            act_newline_index = value.rfind('\n')
+            if act_newline_index != -1:
+                last_newline_index = match.start() + act_newline_index
+
         col = recognized_index - last_newline_index
 
     if recognized_index != len(text):
