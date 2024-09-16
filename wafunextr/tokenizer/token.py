@@ -1,7 +1,8 @@
 from wafunextr.tokenizer.token_type import TokenType
+from wafunextr.utils import Node
 
 
-class Token:
+class Token(Node):
 
     def __init__(self, token_type: TokenType, token_value: str, line: int, col: int):
         if token_value == '':
