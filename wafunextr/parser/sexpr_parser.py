@@ -4,6 +4,8 @@ from wafunextr.utils import ListNode, Node
 
 
 def parse(tokens: list[Token]) -> Node:
+    if not tokens:
+        raise ValueError('The program must include at least one token')
     current_tree = ListNode('Program')
     parent_stack: list = []
 

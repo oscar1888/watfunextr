@@ -69,6 +69,12 @@ class SExprParser(unittest.TestCase):
             )
         )
 
+    def test_empty_program(self):
+        with self.assertRaises(ValueError) as ctx:
+            parse([])
+
+        self.assertEqual(str(ctx.exception), 'The program must include at least one token')
+
 
 if __name__ == '__main__':
     unittest.main()
