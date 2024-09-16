@@ -23,4 +23,7 @@ def parse(tokens: list[Token]) -> Node:
         else:
             current_tree.add_child(token)
 
+    if parent_stack:
+        raise ParserError(f'Syntax error: there {"are" if len(parent_stack) > 1 else "is"} {len(parent_stack)} unclosed parenthesis')
+
     return current_tree

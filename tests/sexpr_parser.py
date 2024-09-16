@@ -82,6 +82,12 @@ class SExprParser(unittest.TestCase):
 
         self.assertEqual(str(ctx.exception), 'Syntax error at 3:2: unexpected right parenthesis')
 
+    def test_unclosed_par(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('unclosed_par.wat')))
+
+        self.assertEqual(str(ctx.exception), 'Syntax error: there are 2 unclosed parenthesis')
+
 
 if __name__ == '__main__':
     unittest.main()
