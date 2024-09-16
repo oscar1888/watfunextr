@@ -159,6 +159,13 @@ class TokenizerTest(unittest.TestCase):
 
         self.assertEqual(str(ctx.exception), 'Unexpected token at 3:1: extra')
 
+    def test_empty_module(self):
+
+        with self.assertRaises(ValueError) as ctx:
+            tokenize(read('empty_program.wat'))
+
+        self.assertEqual(str(ctx.exception), 'WAT program cannot be empty')
+
 
 if __name__ == '__main__':
     unittest.main()

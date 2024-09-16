@@ -15,6 +15,8 @@ def _to_skip(token_type: TokenType, skip_ws: bool, skip_comments: bool) -> bool:
 
 
 def tokenize(text: str, skip_ws: bool = True, skip_comments: bool = True) -> list[Token]:
+    if not text:
+        raise ValueError('WAT program cannot be empty')
     regex: str = '|'.join(f'(?P<{token_type.name}>{pattern})' for token_type, pattern in token_patterns.items())
     tokens_re = re.compile(regex, re.DOTALL)
 
