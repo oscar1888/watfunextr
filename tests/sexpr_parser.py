@@ -2,6 +2,7 @@ import unittest
 
 from tests.utils import read
 from wafunextr.parser import parse
+from wafunextr.parser.parser_error import ParserError
 from wafunextr.tokenizer import tokenize
 from wafunextr.tokenizer.token import Token
 from wafunextr.tokenizer.token_type import TokenType
@@ -74,6 +75,12 @@ class SExprParser(unittest.TestCase):
             parse([])
 
         self.assertEqual(str(ctx.exception), 'The program must include at least one token')
+
+    def test_exceeding_right_par(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('exceeding_right_par.wat')))
+
+        self.assertEqual(str(ctx.exception), 'Syntax error at 3:2: unexpected right parenthesis')
 
 
 if __name__ == '__main__':
