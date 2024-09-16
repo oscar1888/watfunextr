@@ -19,6 +19,8 @@ def parse(tokens: list[Token]) -> Node:
         elif token.token_type == TokenType.RPAR:
             if not parent_stack:
                 raise ParserError(f'Syntax error at {token.line}:{token.col}: unexpected right parenthesis')
+            if not current_tree.children:
+                raise ParserError(f'Syntax error at {token.line}:{token.col}: empty parenthesis')
             current_tree = parent_stack.pop()
         else:
             current_tree.add_child(token)
