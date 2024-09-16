@@ -7,13 +7,13 @@ from wafunextr.utils import ListNode, Node
 def parse(tokens: list[Token]) -> Node:
     if not tokens:
         raise ValueError('The program must include at least one token')
-    current_tree = ListNode('Program')
+    current_tree = ListNode(tokens[0].line, tokens[0].col, 'Module')
     parent_stack: list = []
 
     for token in tokens:
         if token.token_type == TokenType.LPAR:
             parent_stack.append(current_tree)
-            list_node = ListNode()
+            list_node = ListNode(token.line, token.col)
             current_tree.add_child(list_node)
             current_tree = list_node
         elif token.token_type == TokenType.RPAR:
