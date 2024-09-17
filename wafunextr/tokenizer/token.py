@@ -5,12 +5,9 @@ from wafunextr.utils import Node
 class Token(Node):
 
     def __init__(self, token_type: TokenType, token_value: str, line: int, col: int):
+        super().__init__(line, col)
         if token_value == '':
             raise ValueError('The token value cannot be empty')
-        if line < 1:
-            raise ValueError('The line cannot be less than 1')
-        if col < 1:
-            raise ValueError('The column cannot be less than 1')
         self.token_type = token_type
         self.token_value = token_value
         self.line = line

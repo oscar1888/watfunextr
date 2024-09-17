@@ -3,10 +3,7 @@ from wafunextr.utils.node import Node
 
 class ListNode(Node):
     def __init__(self, line: int, col: int, name: str = 'List', *children: Node):
-        if line < 1:
-            raise ValueError('Line cannot be less than one')
-        if col < 1:
-            raise ValueError('Column cannot be less than one')
+        super().__init__(line, col)
         self.name = name
         self.children = [child for child in children]
         self.line = line
