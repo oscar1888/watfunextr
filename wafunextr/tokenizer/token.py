@@ -10,8 +10,6 @@ class Token(Node):
             raise ValueError('The token value cannot be empty')
         self.token_type = token_type
         self.token_value = token_value
-        self.line = line
-        self.col = col
 
     def __repr__(self):
         return f'({self.token_type}, {repr(self.token_value)}, {self.line}:{self.col})'
