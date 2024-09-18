@@ -170,6 +170,34 @@ class SExprParser(unittest.TestCase):
 
         self.assertEqual(str(ctx.exception), "Syntax error at 2:36: unexpected 'loop'")
 
+    def test_unexpected_2(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/func/unexpected.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:32: unexpected 'if'")
+
+    def test_unexpected_in_inner_type_sexp(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/func/unexpected_in_inner_type_sexp.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:19: unexpected 'i32'")
+
+    def test_inner_type_sexp_not_present(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/func/inner_type_sexp_not_present.wat'))),
+            ListNode(1, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    ListNode(2, 11, 'LOCAL',
+                        Token(TokenType.LOCAL, 'local', 2, 12)
+                    ),
+                    ListNode(2, 19, 'NOP',
+                        Token(TokenType.NOP, 'nop', 2, 20)
+                    )
+                )
+            )
+        )
 
 if __name__ == '__main__':
     unittest.main()
