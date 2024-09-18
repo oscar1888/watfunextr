@@ -12,14 +12,14 @@ from wafunextr.utils import ListNode
 class SExprParser(unittest.TestCase):
     def test_simple_module(self):
         self.assertEqual(
-            parse(tokenize(read('simple_module.wat'))),
+            parse(tokenize(read('misc/simple_module.wat'))),
             ListNode(1,1, 'MODULE',
                 Token(TokenType.MODULE, 'module', 1, 2))
         )
 
     def test_add_module(self):
         self.assertEqual(
-            parse(tokenize(read('add.wat'))),
+            parse(tokenize(read('misc/add.wat'))),
             ListNode(1, 1, 'MODULE',
                 Token(TokenType.MODULE, 'module', 1, 2),
                 ListNode(3, 5, 'FUNC',
@@ -62,37 +62,37 @@ class SExprParser(unittest.TestCase):
 
     def test_exceeding_right_par(self):
         with self.assertRaises(ParserError) as ctx:
-            parse(tokenize(read('exceeding_right_par.wat')))
+            parse(tokenize(read('parser_test_cases/exceeding_right_par.wat')))
 
         self.assertEqual(str(ctx.exception), "Syntax error at 3:2: unexpected ')'")
 
     def test_unclosed_par(self):
         with self.assertRaises(ParserError) as ctx:
-            parse(tokenize(read('unclosed_par.wat')))
+            parse(tokenize(read('parser_test_cases/unclosed_par.wat')))
 
         self.assertEqual(str(ctx.exception), 'Syntax error: there are 2 unclosed parenthesis')
 
     def test_empty_par(self):
         with self.assertRaises(ParserError) as ctx:
-            parse(tokenize(read('empty_par.wat')))
+            parse(tokenize(read('parser_test_cases/empty_par.wat')))
 
         self.assertEqual(str(ctx.exception), "Syntax error at 2:6: unexpected ')'")
 
     def test_not_sexp_module(self):
         with self.assertRaises(ParserError) as ctx:
-            parse(tokenize(read('not_sexp_module.wat')))
+            parse(tokenize(read('parser_test_cases/not_sexp_module.wat')))
 
         self.assertEqual(str(ctx.exception), "Syntax error at 1:1: unexpected 'module'")
 
     def test_wrong_module_grammar(self):
         with self.assertRaises(ParserError) as ctx:
-            parse(tokenize(read('wrong_module_grammar.wat')))
+            parse(tokenize(read('parser_test_cases/module/wrong_module_grammar.wat')))
 
         self.assertEqual(str(ctx.exception), "Syntax error at 1:2: unexpected '$add'")
 
     def test_name_after_module_field(self):
         with self.assertRaises(ParserError) as ctx:
-            parse(tokenize(read('name_after_module_field.wat')))
+            parse(tokenize(read('parser_test_cases/module/name_after_module_field.wat')))
 
         self.assertEqual(str(ctx.exception), "Syntax error at 1:23: unexpected '$a'")
 

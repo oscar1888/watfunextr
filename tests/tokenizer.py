@@ -11,7 +11,7 @@ class TokenizerTest(unittest.TestCase):
 
     def test_simple_module(self):
         self.assertEqual(
-            tokenize(read('simple_module.wat')),
+            tokenize(read('misc/simple_module.wat')),
             [
                 Token(TokenType.LPAR, '(', 1, 1),
                 Token(TokenType.MODULE, 'module', 1, 2),
@@ -21,7 +21,7 @@ class TokenizerTest(unittest.TestCase):
 
     def test_line_comment_module(self):
         self.assertEqual(
-            tokenize(read('line_comment_module.wat')),
+            tokenize(read('tokenizer_test_cases/line_comment_module.wat')),
             [
                 Token(TokenType.LPAR, '(', 1, 1),
                 Token(TokenType.MODULE, 'module', 1, 2),
@@ -31,7 +31,7 @@ class TokenizerTest(unittest.TestCase):
 
     def test_multiline_comment_module(self):
         self.assertEqual(
-            tokenize(read('multiline_comment_module.wat')),
+            tokenize(read('tokenizer_test_cases/multiline_comment_module.wat')),
             [
                 Token(TokenType.LPAR, '(', 1, 1),
                 Token(TokenType.MODULE, 'module', 1, 2),
@@ -41,7 +41,7 @@ class TokenizerTest(unittest.TestCase):
 
     def test_add_module(self):
         self.assertEqual(
-            tokenize(read('add.wat')),
+            tokenize(read('misc/add.wat')),
             [
                 Token(TokenType.LPAR, '(', 1, 1),
                 Token(TokenType.MODULE, 'module', 1, 2),
@@ -80,7 +80,7 @@ class TokenizerTest(unittest.TestCase):
 
     def test_if_module(self):
         self.assertEqual(
-            tokenize(read('if.wat')),
+            tokenize(read('misc/if.wat')),
             [
                 Token(TokenType.LPAR, '(', 1, 1),
                 Token(TokenType.MODULE, 'module', 1, 2),
@@ -148,21 +148,21 @@ class TokenizerTest(unittest.TestCase):
     def test_unexpected_token_module_1(self):
 
         with self.assertRaises(TokenizerError) as ctx:
-            tokenize(read('unexpected_token.wat'))
+            tokenize(read('tokenizer_test_cases/unexpected_token.wat'))
 
         self.assertEqual(str(ctx.exception), 'Unexpected token at 2:6: funz')
 
     def test_unexpected_token_module_2(self):
 
         with self.assertRaises(TokenizerError) as ctx:
-            tokenize(read('unexpected_token_2.wat'))
+            tokenize(read('tokenizer_test_cases/unexpected_token_2.wat'))
 
         self.assertEqual(str(ctx.exception), 'Unexpected token at 3:1: extra')
 
     def test_empty_module(self):
 
         with self.assertRaises(ValueError) as ctx:
-            tokenize(read('empty_program.wat'))
+            tokenize(read('tokenizer_test_cases/empty_program.wat'))
 
         self.assertEqual(str(ctx.exception), 'WAT program cannot be empty')
 
