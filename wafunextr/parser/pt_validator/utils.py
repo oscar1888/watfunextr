@@ -80,7 +80,13 @@ def is_next_child_a_sexp(index: int, pt: ListNode, token_type: Union[dict, set, 
 
 def match_zero_or_more_sexp(index: int, pt: ListNode, token_type: Union[dict, set, TokenType], sexp_func):
     while children_left(index, pt) and match_sexp(pt.children[index], token_type, opt=True):
-        sexp_func(pt.children[index])
+        sexp_func(pt.children[index]) if not isinstance(sexp_func, dict) else sexp_func[pt.children[index].children[0].token_type](pt.children[index])
         pt.children[index].name = pt.children[index].children[0].token_type.name
+        index += 1
+    return index
+
+
+def match_zero_or_more_token(index: int, pt: ListNode, token_type: Union[dict, set, TokenType]):
+    while children_left(index, pt) and match_token(pt.children[index], token_type, opt=True):
         index += 1
     return index

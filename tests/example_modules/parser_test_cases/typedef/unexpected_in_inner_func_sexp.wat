@@ -1,0 +1,1 @@
+(module (type $a (func (result) (call 0))))

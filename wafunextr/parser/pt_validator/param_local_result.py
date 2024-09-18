@@ -1,4 +1,5 @@
-from wafunextr.parser.pt_validator.utils import match_token, children_left, is_next_child_a_token
+from wafunextr.parser.pt_validator.utils import match_token, children_left, is_next_child_a_token, \
+    match_zero_or_more_token
 from wafunextr.tokenizer.token_type import TokenType
 from wafunextr.utils import ListNode
 
@@ -19,8 +20,9 @@ def _param_local_structure(pt: ListNode, token_type: TokenType):
         children_left(index, pt, require_zero=True)
         return
 
-    for poss_val_type in pt.children[index:]:
-        match_token(poss_val_type, val_type)
+    index = match_zero_or_more_token(index, pt, val_type)
+
+    children_left(index, pt, require_zero=True)
 
 
 def _param(pt: ListNode):
@@ -34,5 +36,6 @@ def _local(pt: ListNode):
 def _result(pt: ListNode):
     match_token(pt.children[0], TokenType.RESULT)
 
-    for poss_val_type in pt.children[1:]:
-        match_token(poss_val_type, val_type)
+    index = match_zero_or_more_token(1, pt, val_type)
+
+    children_left(index, pt, require_zero=True)

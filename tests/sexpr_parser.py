@@ -100,7 +100,31 @@ class SExprParser(unittest.TestCase):
         with self.assertRaises(ParserError) as ctx:
             parse(tokenize(read('parser_test_cases/module/unexpected_after_module_fields.wat')))
 
-        self.assertEqual(str(ctx.exception), "Syntax error at 1:27: unexpected 'br'")
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:26: unexpected '('")
+
+    def test_required_inner_sexp_not_present(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/typedef/required_inner_sexp_not_present.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:17: unexpected ')'")
+
+    def test_swapped_rules_in_inner_sexp(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/typedef/swapped_rules_in_inner_sexp.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:33: unexpected '('")
+
+    def test_unexpected(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/typedef/unexpected.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:22: unexpected 'block'")
+
+    def test_unexpected_in_inner_func_sexp(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/typedef/unexpected_in_inner_func_sexp.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:33: unexpected '('")
 
 
 if __name__ == '__main__':

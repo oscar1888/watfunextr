@@ -1,0 +1,1 @@
+(module (type $b (func (result) (param i32))))

@@ -67,8 +67,6 @@ def _module(pt: ListNode):
     if is_next_child_a_token(index, pt, TokenType.NAME):
         index += 1
 
-    for poss_module_field in pt.children[index:]:
-        match_sexp(poss_module_field, module_fields)
-        _section = module_fields[poss_module_field.children[0].token_type]
-        _section(poss_module_field)
-        poss_module_field.name = poss_module_field.children[0].token_type.name
+    index = match_zero_or_more_sexp(index, pt, module_fields, module_fields)
+
+    children_left(index, pt, require_zero=True)
