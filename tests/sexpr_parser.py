@@ -164,6 +164,12 @@ class SExprParser(unittest.TestCase):
             )
         )
 
+    def test_unexpected_after_val_types(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/result/unexpected_after_val_types.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:36: unexpected 'loop'")
+
 
 if __name__ == '__main__':
     unittest.main()
