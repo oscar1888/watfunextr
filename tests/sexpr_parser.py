@@ -84,6 +84,8 @@ class SExprParser(unittest.TestCase):
 
         self.assertEqual(str(ctx.exception), "Syntax error at 1:1: unexpected 'module'")
 
+    # MODULE RULE
+
     def test_wrong_module_grammar(self):
         with self.assertRaises(ParserError) as ctx:
             parse(tokenize(read('parser_test_cases/module/wrong_module_grammar.wat')))
@@ -101,6 +103,8 @@ class SExprParser(unittest.TestCase):
             parse(tokenize(read('parser_test_cases/module/unexpected_after_module_fields.wat')))
 
         self.assertEqual(str(ctx.exception), "Syntax error at 1:26: unexpected '('")
+
+    # TYPEDEF RULE
 
     def test_required_inner_sexp_not_present(self):
         with self.assertRaises(ParserError) as ctx:
@@ -125,6 +129,40 @@ class SExprParser(unittest.TestCase):
             parse(tokenize(read('parser_test_cases/typedef/unexpected_in_inner_func_sexp.wat')))
 
         self.assertEqual(str(ctx.exception), "Syntax error at 1:33: unexpected '('")
+
+    # PARAM LOCAL
+
+    def test_multiple_val_type_after_name(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/param_local/multiple_val_type_after_name.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:31: unexpected 'i32'")
+
+    def test_unexpected_in_local_without_name(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/param_local/unexpected_in_local_without_name.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:26: unexpected '('")
+
+    def test_name_not_present(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/param_local/name_not_present.wat'))),
+            ListNode(1, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 'TYPE',
+                    Token(TokenType.TYPE, 'type', 2, 6),
+                    ListNode(2, 11, 'FUNC',
+                        Token(TokenType.FUNC, 'func', 2, 12),
+                        ListNode(2, 17, 'PARAM',
+                            Token(TokenType.PARAM, 'param', 2, 18),
+                            Token(TokenType.NUM_TYPE, 'i32', 2, 24),
+                            Token(TokenType.NUM_TYPE, 'i32', 2, 28),
+                            Token(TokenType.NUM_TYPE, 'i32', 2, 32)
+                        )
+                    )
+                )
+            )
+        )
 
 
 if __name__ == '__main__':
