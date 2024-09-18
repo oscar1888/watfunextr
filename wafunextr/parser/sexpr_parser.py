@@ -1,3 +1,4 @@
+from wafunextr.parser.pt_validator import _validate
 from wafunextr.parser.parser_error import ParserError
 from wafunextr.tokenizer.token import Token
 from wafunextr.tokenizer.token_type import TokenType
@@ -32,5 +33,7 @@ def parse(tokens: list[Token]) -> Node:
 
     if open_par_stack:
         raise ParserError(f'Syntax error: there {"are" if len(open_par_stack) > 1 else "is"} {len(open_par_stack)} unclosed parenthesis')
+
+    _validate(module_tree)
 
     return module_tree

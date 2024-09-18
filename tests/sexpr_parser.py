@@ -84,5 +84,18 @@ class SExprParser(unittest.TestCase):
 
         self.assertEqual(str(ctx.exception), "Syntax error at 1:1: unexpected 'module'")
 
+    def test_wrong_module_grammar(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('wrong_module_grammar.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:2: unexpected '$add'")
+
+    def test_name_after_module_field(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('name_after_module_field.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:23: unexpected '$a'")
+
+
 if __name__ == '__main__':
     unittest.main()
