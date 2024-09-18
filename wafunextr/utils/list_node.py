@@ -2,12 +2,12 @@ from wafunextr.utils.node import Node
 
 
 class ListNode(Node):
-    def __init__(self, line: int, col: int, name: str = 'List', *children: Node):
-        super().__init__(line, col)
+    def __init__(self, start_line: int, start_col: int, name: str = 'List', *children: Node):
+        super().__init__(start_line, start_col)
         self.name = name
         self.children = [child for child in children]
-        self.line = line
-        self.col = col
+        self.end_line = None
+        self.end_col = None
 
     def __repr__(self):
         return f'({self.name}, [{", ".join(str(child) for child in self.children)}], {self.line}:{self.col})'

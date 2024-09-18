@@ -13,39 +13,39 @@ class SExprParser(unittest.TestCase):
     def test_simple_module(self):
         self.assertEqual(
             parse(tokenize(read('simple_module.wat'))),
-            ListNode(1,1, 'List',
-            Token(TokenType.MODULE, 'module', 1, 2))
+            ListNode(1,1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2))
         )
 
     def test_add_module(self):
         self.assertEqual(
             parse(tokenize(read('add.wat'))),
-            ListNode(1, 1, 'List',
+            ListNode(1, 1, 'MODULE',
                 Token(TokenType.MODULE, 'module', 1, 2),
-                ListNode(3, 5, 'List',
+                ListNode(3, 5, 'FUNC',
                     Token(TokenType.FUNC, 'func', 3, 6),
                     Token(TokenType.NAME, '$add', 3, 11),
-                    ListNode(3, 16, 'List',
+                    ListNode(3, 16, 'PARAM',
                         Token(TokenType.PARAM, 'param', 3, 17),
                         Token(TokenType.NAME, '$a', 3, 23),
                         Token(TokenType.NUM_TYPE, 'i32', 3, 26)
                         ),
-                    ListNode(3, 31, 'List',
+                    ListNode(3, 31, 'PARAM',
                         Token(TokenType.PARAM, 'param', 3, 32),
                         Token(TokenType.NAME, '$b', 3, 38),
                         Token(TokenType.NUM_TYPE, 'i32', 3, 41)
                         ),
-                    ListNode(3, 46, 'List',
+                    ListNode(3, 46, 'RESULT',
                         Token(TokenType.RESULT, 'result', 3, 47),
                         Token(TokenType.NUM_TYPE, 'i32', 3, 54)
                         ),
-                    ListNode(4, 9, 'List',
+                    ListNode(4, 9, 'INT_INSTR',
                         Token(TokenType.INT_INSTR, 'i32.add', 4, 10),
-                        ListNode(4, 18, 'List',
+                        ListNode(4, 18, 'LOCAL_INSTR',
                             Token(TokenType.LOCAL_INSTR, 'local.get', 4, 19),
                             Token(TokenType.NAME, '$a', 4, 29)
                         ),
-                        ListNode(4, 33, 'List',
+                        ListNode(4, 33, 'LOCAL_INSTR',
                                  Token(TokenType.LOCAL_INSTR, 'local.get', 4, 34),
                                  Token(TokenType.NAME, '$b', 4, 44)
                         )
@@ -77,6 +77,12 @@ class SExprParser(unittest.TestCase):
             parse(tokenize(read('empty_par.wat')))
 
         self.assertEqual(str(ctx.exception), "Syntax error at 2:6: unexpected ')'")
+
+    def test_not_sexp_module(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('not_sexp_module.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:1: unexpected 'module'")
 
 if __name__ == '__main__':
     unittest.main()
