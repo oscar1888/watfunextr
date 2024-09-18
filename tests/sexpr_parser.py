@@ -96,6 +96,12 @@ class SExprParser(unittest.TestCase):
 
         self.assertEqual(str(ctx.exception), "Syntax error at 1:23: unexpected '$a'")
 
+    def test_unexpected_after_module_fields(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/module/unexpected_after_module_fields.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:27: unexpected 'br'")
+
 
 if __name__ == '__main__':
     unittest.main()

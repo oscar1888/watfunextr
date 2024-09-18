@@ -1,0 +1,1 @@
+(module $a (func) (func) (br 0))
