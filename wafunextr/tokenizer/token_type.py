@@ -21,22 +21,25 @@ class TokenType(Enum):
     CONST_INSTR = 14
     INT_INSTR = 15
     FLOAT_INSTR = 16
+    GLOBAL_INSTR = 17
 
     # Keywords
-    MODULE = 17
-    TYPE = 18
-    FUNC = 19
-    PARAM = 20
-    RESULT = 21
-    LOCAL = 22
-    BLOCK = 23
-    LOOP = 24
-    IF = 25
-    THEN = 26
-    ELSE = 27
+    MODULE = 18
+    TYPE = 19
+    FUNC = 20
+    PARAM = 21
+    RESULT = 22
+    LOCAL = 23
+    BLOCK = 24
+    LOOP = 25
+    IF = 26
+    THEN = 27
+    ELSE = 28
+    MUT = 29
+    GLOBAL = 30
 
     # Values
-    NAME = 28
-    NAT = 29
-    NUM = 30
-    NUM_TYPE = 31
+    NAME = 31
+    NAT = 32
+    NUM = 33
+    NUM_TYPE = 34

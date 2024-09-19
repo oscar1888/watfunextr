@@ -5,6 +5,8 @@ from wafunextr.tokenizer.token_type import TokenType
 from wafunextr.utils import ListNode, Node
 from wafunextr.parser.parser_error import _format_unexpected_token as unexp_fmt
 
+val_type = {TokenType.NUM_TYPE}
+
 var = {TokenType.NAT, TokenType.NAME}
 
 ops = {
@@ -19,7 +21,8 @@ ops = {
     TokenType.LOCAL_INSTR,
     TokenType.CONST_INSTR,
     TokenType.INT_INSTR,
-    TokenType.FLOAT_INSTR
+    TokenType.FLOAT_INSTR,
+    TokenType.GLOBAL_INSTR
 }
 
 expr_alts = {

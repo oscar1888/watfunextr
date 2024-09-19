@@ -355,6 +355,57 @@ class SExprParser(unittest.TestCase):
 
         self.assertEqual(str(ctx.exception), "Syntax error at 2:31: unexpected 'loop'")
 
+    def test_global_type_as_mut_sexp(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/global/global_type_as_mut_sexp.wat'))),
+            ListNode(1, 1, 'MODULE',
+            Token(TokenType.MODULE, 'module', 1, 2),
+            ListNode(2, 5, 'GLOBAL',
+                Token(TokenType.GLOBAL, 'global', 2, 6),
+                ListNode(2, 13, 'MUT',
+                    Token(TokenType.MUT, 'mut', 2, 14),
+                    Token(TokenType.NUM_TYPE, 'i32', 2, 18)
+                )
+            )
+            )
+        )
+
+    def test_val_type_missing_in_global_type_sexp(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/global/val_type_missing_in_global_type_sexp.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:17: unexpected ')'")
+
+    def test_global_type_as_val_type(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/global/global_type_as_val_type.wat'))),
+            ListNode(1, 1, 'MODULE',
+            Token(TokenType.MODULE, 'module', 1, 2),
+            ListNode(2, 5, 'GLOBAL',
+                Token(TokenType.GLOBAL, 'global', 2, 6),
+                Token(TokenType.NUM_TYPE, 'i32', 2, 13)
+            )
+            )
+        )
+
+    def test_global_type_missing(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/global/global_type_missing.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:15: unexpected ')'")
+
+    def test_unexpected_in_inner_global_type_sexp(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/global/unexpected_in_inner_global_type_sexp.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:22: unexpected 'i32'")
+
+    def test_unexpected_global(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/global/unexpected_global.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:23: unexpected '('")
+
 
 if __name__ == '__main__':
     unittest.main()

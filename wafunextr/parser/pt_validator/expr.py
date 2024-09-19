@@ -4,7 +4,7 @@ from wafunextr.parser.pt_validator.utils import instr_kw, var, expr_alts, match_
 from wafunextr.tokenizer.token_type import TokenType
 from wafunextr.utils import ListNode
 
-var_as_arg = {TokenType.BR, TokenType.BR_IF, TokenType.CALL, TokenType.LOCAL_INSTR}
+var_as_arg = {TokenType.BR, TokenType.BR_IF, TokenType.CALL, TokenType.LOCAL_INSTR, TokenType.GLOBAL_INSTR}
 
 
 def _block_loop_structure(pt: ListNode, token_type: TokenType):

@@ -1,9 +1,11 @@
+from wafunextr.parser.parser_error import ParserError
 from wafunextr.parser.pt_validator.expr import _expr
 from wafunextr.parser.pt_validator.param_local_result import _param, _result, _local
 from wafunextr.parser.pt_validator.utils import var, instr_kw, match_token, children_left, match_sexp, \
-    is_next_child_a_token, match_zero_or_more_sexp, is_next_child_a_sexp
+    is_next_child_a_token, match_zero_or_more_sexp, is_next_child_a_sexp, val_type
 from wafunextr.tokenizer.token_type import TokenType
 from wafunextr.utils import ListNode
+from wafunextr.parser.parser_error import _format_unexpected_token as unexp_fmt
 
 
 def _func(pt: ListNode):
@@ -57,7 +59,33 @@ def _typedef(pt: ListNode):
     children_left(index, pt, require_zero=True)
 
 
-module_fields = {TokenType.TYPE: _typedef, TokenType.FUNC: _func}
+def _global(pt: ListNode):
+    match_token(pt.children[0], TokenType.GLOBAL)
+
+    index = 1
+    if is_next_child_a_token(index, pt, TokenType.NAME):
+        index += 1
+
+    children_left(index, pt, require_at_least_one=True)
+
+    if match_sexp(pt.children[index], TokenType.MUT, opt=True):
+        mut_sexp = pt.children[index]
+        index2 = 1
+        children_left(index2, mut_sexp, require_at_least_one=True)
+        match_token(mut_sexp.children[index2], val_type)
+        index2 += 1
+        children_left(index2, mut_sexp, require_zero=True)
+        mut_sexp.name = mut_sexp.children[0].token_type.name
+    else:
+        match_token(pt.children[index], val_type)
+    index += 1
+
+    index = match_zero_or_more_sexp(index, pt, instr_kw, _expr)
+
+    children_left(index, pt, require_zero=True)
+
+
+module_fields = {TokenType.TYPE: _typedef, TokenType.FUNC: _func, TokenType.GLOBAL: _global}
 
 
 def _module(pt: ListNode):

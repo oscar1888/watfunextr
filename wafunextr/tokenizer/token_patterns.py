@@ -150,6 +150,7 @@ token_patterns = {
     TokenType.CONST_INSTR: '(' + NXX + ')' + r'\.const',
     TokenType.INT_INSTR: INT_INSTR,
     TokenType.FLOAT_INSTR: FLOAT_INSTR,
+    TokenType.GLOBAL_INSTR: r'global\.(get|set)',
 
     # Keywords
     TokenType.MODULE: 'module',
@@ -163,6 +164,8 @@ token_patterns = {
     TokenType.IF: 'if',
     TokenType.THEN: 'then',
     TokenType.ELSE: 'else',
+    TokenType.MUT: 'mut',
+    TokenType.GLOBAL: 'global',
 
     # Values
     TokenType.NAME: Name,
