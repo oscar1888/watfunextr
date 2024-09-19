@@ -199,5 +199,162 @@ class SExprParser(unittest.TestCase):
             )
         )
 
+    def test_if_expr_with_else(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/expr/if_expr_with_else.wat'))),
+            ListNode(1, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    Token(TokenType.NAME, '$a', 2, 11),
+                    ListNode(2, 14, 'IF',
+                        Token(TokenType.IF, 'if', 2, 15),
+                        ListNode(2, 18, 'THEN',
+                            Token(TokenType.THEN, 'then', 2, 19)
+                        ),
+                        ListNode(2, 25, 'ELSE',
+                            Token(TokenType.ELSE, 'else', 2, 26)
+                        )
+                    )
+                )
+            )
+        )
+
+    def test_more_than_one_op_expr(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/expr/more_than_one_op_expr.wat'))),
+            ListNode(1, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    ListNode(2, 11, 'CALL',
+                        Token(TokenType.CALL, 'call', 2, 12),
+                        Token(TokenType.NAT, '4', 2, 17),
+                        ListNode(2, 19, 'DROP',
+                            Token(TokenType.DROP, 'drop', 2, 20),
+                            ListNode(2, 25, 'LOCAL_INSTR',
+                                Token(TokenType.LOCAL_INSTR, 'local.get', 2, 26),
+                                Token(TokenType.NAME, '$a', 2, 36)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+    def test_nested_block(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/expr/nested_block.wat'))),
+            ListNode(1, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    ListNode(2, 11, 'BLOCK',
+                        Token(TokenType.BLOCK, 'block', 2, 12),
+                        Token(TokenType.NAME, '$a', 2, 18),
+                        ListNode(2, 21, 'RESULT',
+                            Token(TokenType.RESULT, 'result', 2, 22)
+                        ),
+                        ListNode(2, 30, 'BLOCK',
+                            Token(TokenType.BLOCK, 'block', 2, 31),
+                            Token(TokenType.NAME, '$b', 2, 37),
+                            ListNode(2, 40, 'RESULT',
+                                Token(TokenType.RESULT, 'result', 2, 41),
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+    def test_nested_if(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/expr/nested_if.wat'))),
+            ListNode(1, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    Token(TokenType.NAME, '$a', 2, 11),
+                    ListNode(2, 14, 'IF',
+                        Token(TokenType.IF, 'if', 2, 15),
+                        ListNode(2, 18, 'THEN',
+                            Token(TokenType.THEN, 'then', 2, 19),
+                            ListNode(2, 24, 'IF',
+                                Token(TokenType.IF, 'if', 2, 25),
+                                ListNode(2, 28, 'THEN',
+                                    Token(TokenType.THEN, 'then', 2, 29)
+                                )
+                            )
+                        ),
+                        ListNode(2, 37, 'ELSE',
+                            Token(TokenType.ELSE, 'else', 2, 38)
+                        )
+                    )
+                )
+            )
+        )
+
+    def test_nested_if_in_else_clause(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/expr/nested_if_in_else_clause.wat'))),
+            ListNode(1, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    Token(TokenType.NAME, '$a', 2, 11),
+                    ListNode(2, 14, 'IF',
+                        Token(TokenType.IF, 'if', 2, 15),
+                        ListNode(2, 18, 'THEN',
+                            Token(TokenType.THEN, 'then', 2, 19),
+                        ),
+                        ListNode(2, 25, 'ELSE',
+                            Token(TokenType.ELSE, 'else', 2, 26),
+                            ListNode(2, 31, 'IF',
+                                Token(TokenType.IF, 'if', 2, 32),
+                                ListNode(2, 35, 'THEN',
+                                    Token(TokenType.THEN, 'then', 2, 36)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+    def test_one_op_expr(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/expr/one_op_expr.wat'))),
+            ListNode(1, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    Token(TokenType.NAME, '$a', 2, 11),
+                    ListNode(2, 14, 'LOCAL_INSTR',
+                        Token(TokenType.LOCAL_INSTR, 'local.set', 2, 15),
+                        Token(TokenType.NAT, '3', 2, 25)
+                    )
+                )
+            )
+        )
+
+    def test_then_clause_not_present(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/expr/then_clause_not_present.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:19: unexpected 'else'")
+
+    def test_unexpected_in_block_expr(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/expr/unexpected_in_block_expr.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:21: unexpected 'loop'")
+
+    def test_unexpected_in_else_clause(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/expr/unexpected_in_else_clause.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:31: unexpected 'loop'")
+
+
 if __name__ == '__main__':
     unittest.main()

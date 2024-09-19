@@ -14,7 +14,9 @@ def _block_loop_structure(pt: ListNode, token_type: TokenType):
     if is_next_child_a_token(index, pt, TokenType.NAME):
         index += 1
 
-    index = match_zero_or_more_sexp(index, pt, TokenType.RESULT, _result)
+    if is_next_child_a_sexp(index, pt, TokenType.RESULT):
+        pt.children[index].name = pt.children[index].children[0].token_type.name
+        index += 1
 
     index = match_zero_or_more_sexp(index, pt, instr_kw, _expr)
 
