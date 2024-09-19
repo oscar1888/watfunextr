@@ -1,7 +1,7 @@
-from wafunextr.parser.pt_validator.utils import match_token, children_left, is_next_child_a_token, \
+from watfunextr.parser.pt_validator.utils import match_token, children_left, is_next_child_a_token, \
     match_zero_or_more_token, val_type
-from wafunextr.tokenizer.token_type import TokenType
-from wafunextr.utils import ListNode
+from watfunextr.tokenizer.token_type import TokenType
+from watfunextr.utils import ListNode
 
 
 def _param_local_structure(pt: ListNode, token_type: TokenType):

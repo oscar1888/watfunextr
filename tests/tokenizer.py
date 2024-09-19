@@ -1,10 +1,10 @@
 import unittest
 
 from tests.utils import read
-from wafunextr.tokenizer.token import Token
-from wafunextr.tokenizer.token_type import TokenType
-from wafunextr.tokenizer import tokenize
-from wafunextr.tokenizer.tokenizer_error import TokenizerError
+from watfunextr.tokenizer.token import Token
+from watfunextr.tokenizer.token_type import TokenType
+from watfunextr.tokenizer import tokenize
+from watfunextr.tokenizer.tokenizer_error import TokenizerError
 
 
 class TokenizerTest(unittest.TestCase):

@@ -1,12 +1,12 @@
 import unittest
 
 from tests.utils import read
-from wafunextr.parser import parse
-from wafunextr.parser.parser_error import ParserError
-from wafunextr.tokenizer import tokenize
-from wafunextr.tokenizer.token import Token
-from wafunextr.tokenizer.token_type import TokenType
-from wafunextr.utils import ListNode
+from watfunextr.parser import parse
+from watfunextr.parser.parser_error import ParserError
+from watfunextr.tokenizer import tokenize
+from watfunextr.tokenizer.token import Token
+from watfunextr.tokenizer.token_type import TokenType
+from watfunextr.utils import ListNode
 
 
 class SExprParser(unittest.TestCase):

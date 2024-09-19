@@ -1,9 +1,9 @@
-from wafunextr.parser.pt_validator import _validate
-from wafunextr.parser.parser_error import ParserError
-from wafunextr.tokenizer.token import Token
-from wafunextr.tokenizer.token_type import TokenType
-from wafunextr.utils import ListNode, Node
-from wafunextr.parser.parser_error import _format_unexpected_token as unexp_fmt
+from watfunextr.parser.pt_validator import _validate
+from watfunextr.parser.parser_error import ParserError
+from watfunextr.tokenizer.token import Token
+from watfunextr.tokenizer.token_type import TokenType
+from watfunextr.utils import ListNode, Node
+from watfunextr.parser.parser_error import _format_unexpected_token as unexp_fmt
 
 
 def parse(tokens: list[Token]) -> Node:

@@ -1,9 +1,9 @@
-from wafunextr.tokenizer.token import Token
-from wafunextr.tokenizer.token_patterns import token_patterns
-from wafunextr.tokenizer.token_type import TokenType
+from watfunextr.tokenizer.token import Token
+from watfunextr.tokenizer.token_patterns import token_patterns
+from watfunextr.tokenizer.token_type import TokenType
 import re
 
-from wafunextr.tokenizer.tokenizer_error import TokenizerError
+from watfunextr.tokenizer.tokenizer_error import TokenizerError
 
 
 def _find_match_group(match):

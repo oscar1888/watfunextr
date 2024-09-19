@@ -1,8 +1,8 @@
-from wafunextr.parser.pt_validator.param_local_result import _result
-from wafunextr.parser.pt_validator.utils import instr_kw, var, expr_alts, match_token, children_left, match_sexp, \
+from watfunextr.parser.pt_validator.param_local_result import _result
+from watfunextr.parser.pt_validator.utils import instr_kw, var, expr_alts, match_token, children_left, match_sexp, \
     is_next_child_a_token, match_zero_or_more_sexp, is_next_child_a_sexp
-from wafunextr.tokenizer.token_type import TokenType
-from wafunextr.utils import ListNode
+from watfunextr.tokenizer.token_type import TokenType
+from watfunextr.utils import ListNode
 
 var_as_arg = {TokenType.BR, TokenType.BR_IF, TokenType.CALL, TokenType.LOCAL_INSTR, TokenType.GLOBAL_INSTR}
 

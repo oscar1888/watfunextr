@@ -1,4 +1,4 @@
-from wafunextr.utils.node import Node
+from watfunextr.utils.node import Node
 
 
 class ListNode(Node):

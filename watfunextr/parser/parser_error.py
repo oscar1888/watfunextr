@@ -1,5 +1,5 @@
-from wafunextr.tokenizer.token import Token
-from wafunextr.utils import Node
+from watfunextr.tokenizer.token import Token
+from watfunextr.utils import Node
 
 
 def _format_unexpected_token(node: Node):

@@ -1,5 +1,5 @@
-from wafunextr.tokenizer.token_type import TokenType
-from wafunextr.utils import Node
+from watfunextr.tokenizer.token_type import TokenType
+from watfunextr.utils import Node
 
 
 class Token(Node):

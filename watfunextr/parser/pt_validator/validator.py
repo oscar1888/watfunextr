@@ -1,5 +1,5 @@
-from wafunextr.utils import ListNode
-from wafunextr.parser.pt_validator.sections import _module
+from watfunextr.utils import ListNode
+from watfunextr.parser.pt_validator.sections import _module
 
 
 def _validate(parse_tree: ListNode):

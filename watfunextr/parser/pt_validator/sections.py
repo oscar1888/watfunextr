@@ -1,11 +1,11 @@
-from wafunextr.parser.parser_error import ParserError
-from wafunextr.parser.pt_validator.expr import _expr
-from wafunextr.parser.pt_validator.param_local_result import _param, _result, _local
-from wafunextr.parser.pt_validator.utils import var, instr_kw, match_token, children_left, match_sexp, \
+from watfunextr.parser.parser_error import ParserError
+from watfunextr.parser.pt_validator.expr import _expr
+from watfunextr.parser.pt_validator.param_local_result import _param, _result, _local
+from watfunextr.parser.pt_validator.utils import var, instr_kw, match_token, children_left, match_sexp, \
     is_next_child_a_token, match_zero_or_more_sexp, is_next_child_a_sexp, val_type
-from wafunextr.tokenizer.token_type import TokenType
-from wafunextr.utils import ListNode
-from wafunextr.parser.parser_error import _format_unexpected_token as unexp_fmt
+from watfunextr.tokenizer.token_type import TokenType
+from watfunextr.utils import ListNode
+from watfunextr.parser.parser_error import _format_unexpected_token as unexp_fmt
 
 
 def _func(pt: ListNode):
