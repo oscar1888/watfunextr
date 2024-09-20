@@ -43,7 +43,7 @@ dependencies).
 
 ### Example Output
 
-The tool will output a new WASM file named `function_<function-name-or-index>_extracted.wasm` in the current directory,
+The tool will output a new WAT file named `function_<function-name-or-index>_extracted.wat` in the current directory,
 containing only the requested function and its dependencies.
 
 ## License
