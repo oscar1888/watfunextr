@@ -3,7 +3,6 @@ from watfunextr.parser.parser_error import ParserError
 from watfunextr.tokenizer.token import Token
 from watfunextr.tokenizer.token_type import TokenType
 from watfunextr.utils import ListNode, Node
-from watfunextr.parser.parser_error import _format_unexpected_token as unexp_fmt
 
 val_type = {TokenType.NUM_TYPE}
 
@@ -41,7 +40,7 @@ def children_left(index: int, pt: ListNode, require_zero=False, require_at_least
         return index < len(pt.children)
     if require_zero:
         if index < len(pt.children):
-            raise ParserError(unexp_fmt(pt.children[index]))
+            raise ParserError(pt.children[index])
         return
     if index >= len(pt.children):
         raise ParserError(f"Syntax error at {pt.end_line}:{pt.end_col}: unexpected ')'")
@@ -58,9 +57,9 @@ def match_token(poss_token: Node, token_type: Union[dict, set, TokenType], opt=F
     if opt:
         return isinstance(poss_token, Token) and poss_token.token_type in token_type
     if not isinstance(poss_token, Token):
-        raise ParserError(unexp_fmt(poss_token))
+        raise ParserError(poss_token)
     if poss_token.token_type not in token_type:
-        raise ParserError(unexp_fmt(poss_token))
+        raise ParserError(poss_token)
 
 
 def match_sexp(poss_sexp: Node, token_type: Union[dict, set, TokenType], opt=False):
@@ -68,9 +67,9 @@ def match_sexp(poss_sexp: Node, token_type: Union[dict, set, TokenType], opt=Fal
     if opt:
         return isinstance(poss_sexp, ListNode) and poss_sexp.children[0].token_type in token_type
     if not isinstance(poss_sexp, ListNode):
-        raise ParserError(unexp_fmt(poss_sexp))
+        raise ParserError(poss_sexp)
     if poss_sexp.children[0].token_type not in token_type:
-        raise ParserError(unexp_fmt(poss_sexp.children[0]))
+        raise ParserError(poss_sexp.children[0])
 
 
 def is_next_child_a_token(index: int, pt: ListNode, token_type: Union[dict, set, TokenType]):
