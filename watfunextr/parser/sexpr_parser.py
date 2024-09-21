@@ -1,4 +1,4 @@
-from watfunextr.parser.pt_validator import _validate
+from watfunextr.parser.pt_validator import validate
 from watfunextr.parser.parser_error import ParserError
 from watfunextr.tokenizer.token import Token
 from watfunextr.tokenizer.token_type import TokenType
@@ -11,29 +11,31 @@ def parse(tokens: list[Token]) -> Node:
         raise ValueError('The program must include at least one token')
     if tokens[0].token_type != TokenType.LPAR:
         raise ParserError(unexp_fmt(tokens[0]))
-    module_tree = ListNode(tokens[0].line, tokens[0].col)
+    module_tree = ([], tokens[0].line, tokens[0].col)
     open_par_stack: list = [module_tree]
 
     for i, token in enumerate(tokens[1:]):
         if token.token_type not in {TokenType.LPAR, TokenType.RPAR}:
-            open_par_stack[-1].add_child(token)
+            open_par_stack[-1][0].append(token)
             continue
-        if not open_par_stack[-1].children:
+        if not open_par_stack[-1][0]:
             raise ParserError(unexp_fmt(token))
         if token.token_type == TokenType.LPAR:
-            list_node = ListNode(token.line, token.col)
-            open_par_stack[-1].add_child(list_node)
+            list_node = ([], token.line, token.col)
+            open_par_stack[-1][0].append(list_node)
             open_par_stack.append(list_node)
         elif token.token_type == TokenType.RPAR:
-            popped: ListNode = open_par_stack.pop()
-            popped.end_line = token.line
-            popped.end_col = token.col
-            if not open_par_stack and i < len(tokens[1:]) - 1:
-                raise ParserError(unexp_fmt(tokens[1:][i + 1]))
+            popped = open_par_stack.pop()
+            if not open_par_stack:
+                if i < len(tokens[1:]) - 1:
+                    raise ParserError(unexp_fmt(tokens[1:][i + 1]))
+                module_tree = ListNode(popped[1], popped[2], token.line, token.col, 'List', *popped[0])
+            else:
+                open_par_stack[-1][0][-1] = ListNode(popped[1], popped[2], token.line, token.col, 'List', *popped[0])
 
     if open_par_stack:
         raise ParserError(f'Syntax error: there {"are" if len(open_par_stack) > 1 else "is"} {len(open_par_stack)} unclosed parenthesis')
 
-    _validate(module_tree)
+    validate(module_tree)
 
     return module_tree
