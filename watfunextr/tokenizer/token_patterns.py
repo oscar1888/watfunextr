@@ -169,7 +169,7 @@ token_patterns = {
 
     # Values
     TokenType.NAME: Name,
-    TokenType.NUM: '(' + Int + ')' + '|' + '(' + Float + ')',
+    TokenType.NUM: '(' + Float + ')' + '|' + '(' + Int + ')',
     TokenType.NAT: Nat,
     TokenType.NUM_TYPE: NXX,
 }
