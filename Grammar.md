@@ -34,6 +34,7 @@ The idea behind choosing a subset of the original grammar is to make a WAT modul
          |  '(' 'local' <NAME> <val_type> ')'
 
 <instr> ::= <expr>
+         |  <op>
 
 <expr> ::= '(' <op> <expr>* ')'
         |  '(' 'block' <NAME>? <result>? <instr>* ')'

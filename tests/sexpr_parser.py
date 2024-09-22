@@ -360,14 +360,14 @@ class SExprParser(unittest.TestCase):
         self.assertEqual(
             parse(tokenize(read('parser_test_cases/global/global_type_as_mut_sexp.wat'))),
             ListNode(1, 1, 3, 1, 'MODULE',
-            Token(TokenType.MODULE, 'module', 1, 2),
-            ListNode(2, 5, 2, 22, 'GLOBAL',
-                Token(TokenType.GLOBAL, 'global', 2, 6),
-                ListNode(2, 13, 2, 21, 'MUT',
-                    Token(TokenType.MUT, 'mut', 2, 14),
-                    Token(TokenType.NUM_TYPE, 'i32', 2, 18)
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 22, 'GLOBAL',
+                    Token(TokenType.GLOBAL, 'global', 2, 6),
+                    ListNode(2, 13, 2, 21, 'MUT',
+                        Token(TokenType.MUT, 'mut', 2, 14),
+                        Token(TokenType.NUM_TYPE, 'i32', 2, 18)
+                    )
                 )
-            )
             )
         )
 
@@ -381,11 +381,11 @@ class SExprParser(unittest.TestCase):
         self.assertEqual(
             parse(tokenize(read('parser_test_cases/global/global_type_as_val_type.wat'))),
             ListNode(1, 1, 3, 1, 'MODULE',
-            Token(TokenType.MODULE, 'module', 1, 2),
-            ListNode(2, 5, 2, 16, 'GLOBAL',
-                Token(TokenType.GLOBAL, 'global', 2, 6),
-                Token(TokenType.NUM_TYPE, 'i32', 2, 13)
-            )
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 16, 'GLOBAL',
+                    Token(TokenType.GLOBAL, 'global', 2, 6),
+                    Token(TokenType.NUM_TYPE, 'i32', 2, 13)
+                )
             )
         )
 
@@ -406,6 +406,93 @@ class SExprParser(unittest.TestCase):
             parse(tokenize(read('parser_test_cases/global/unexpected_global.wat')))
 
         self.assertEqual(str(ctx.exception), "Syntax error at 2:23: unexpected '('")
+
+    def test_mixed_instr_alts(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/instr/mixed_instr_alts.wat'))),
+            ListNode(1, 1, 3, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 33, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    Token(TokenType.CALL, 'call', 2, 11),
+                    Token(TokenType.NAT, '3', 2, 16),
+                    Token(TokenType.CALL, 'call', 2, 18),
+                    Token(TokenType.NAT, '4', 2, 23),
+                    ListNode(2, 25, 2, 32, 'CALL',
+                        Token(TokenType.CALL, 'call', 2, 26),
+                        Token(TokenType.NAT, '5', 2, 31)
+                    )
+                )
+            )
+        )
+
+    def test_single_op_alt(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/instr/single_op_alt.wat'))),
+            ListNode(1, 1, 3, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 21, 'GLOBAL',
+                    Token(TokenType.GLOBAL, 'global', 2, 6),
+                    Token(TokenType.NUM_TYPE, 'i32', 2, 13),
+                    Token(TokenType.DROP, 'drop', 2, 17)
+                )
+            )
+        )
+
+    def test_single_op_alt_2(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/instr/single_op_alt_2.wat'))),
+            ListNode(1, 1, 3, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 23, 'GLOBAL',
+                    Token(TokenType.GLOBAL, 'global', 2, 6),
+                    Token(TokenType.NUM_TYPE, 'i32', 2, 13),
+                    Token(TokenType.CALL, 'call', 2, 17),
+                    Token(TokenType.NAT, '3', 2, 22)
+                )
+            )
+        )
+
+    def test_then_op_alt(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/instr/then_op_alt.wat'))),
+            ListNode(1, 1, 3, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 29, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    ListNode(2, 11, 2, 28, 'IF',
+                        Token(TokenType.IF, 'if', 2, 12),
+                        ListNode(2, 15, 2, 27, 'THEN',
+                            Token(TokenType.THEN, 'then', 2, 16),
+                            Token(TokenType.CALL, 'call', 2, 21),
+                            Token(TokenType.NAT, '2', 2, 26)
+                        )
+                    )
+                )
+            )
+        )
+
+    def test_else_op_alt(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/instr/else_op_alt.wat'))),
+            ListNode(1, 1, 3, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 44, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    ListNode(2, 11, 2, 43, 'IF',
+                        Token(TokenType.IF, 'if', 2, 12),
+                        ListNode(2, 15, 2, 20, 'THEN',
+                            Token(TokenType.THEN, 'then', 2, 16)
+                        ),
+                        ListNode(2, 22, 2, 42, 'ELSE',
+                            Token(TokenType.ELSE, 'else', 2, 23),
+                            Token(TokenType.CONST_INSTR, 'f32.const', 2, 28),
+                            Token(TokenType.NUM, '-2.3', 2, 38)
+                        )
+                    )
+                )
+            )
+        )
 
 
 if __name__ == '__main__':

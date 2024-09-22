@@ -1,7 +1,8 @@
 from watfunextr.parser.pt_validator.expr import _expr
 from watfunextr.parser.pt_validator.param_local_result import _param, _result, _local
 from watfunextr.parser.pt_validator.utils import var, instr_kw, match_token, children_left, match_sexp, \
-    is_next_child_a_token, match_zero_or_more_sexp, is_next_child_a_sexp, val_type
+    next_child_and_is_a_token, match_zero_or_more_sexp, next_child_and_is_a_sexp, val_type, match_zero_or_more_tokens_or_sexp_rule, \
+    ops, _op
 from watfunextr.tokenizer.token_type import TokenType
 from watfunextr.utils import ListNode
 
@@ -10,14 +11,14 @@ def _func(pt: ListNode):
     match_token(pt.children[0], TokenType.FUNC)
 
     index = 1
-    if is_next_child_a_token(index, pt, TokenType.NAME):
+    if next_child_and_is_a_token(index, pt, TokenType.NAME):
         index += 1
 
-    if is_next_child_a_sexp(index, pt, TokenType.TYPE):
+    if next_child_and_is_a_sexp(index, pt, TokenType.TYPE):
         func_type = pt.children[index]
         index2 = 1
         children_left(index2, func_type, require_at_least_one=True)
-        match_token(func_type.children[1], var)
+        match_token(func_type.children[index2], var)
         index2 += 1
         children_left(index2, func_type, require_zero=True)
         func_type.name = func_type.children[0].token_type.name
@@ -29,7 +30,7 @@ def _func(pt: ListNode):
 
     index = match_zero_or_more_sexp(index, pt, TokenType.LOCAL, _local)
 
-    index = match_zero_or_more_sexp(index, pt, instr_kw, _expr)
+    index = match_zero_or_more_tokens_or_sexp_rule(index, pt, ops, instr_kw, _op, _expr)
 
     children_left(index, pt, require_zero=True)
 
@@ -38,7 +39,7 @@ def _typedef(pt: ListNode):
     match_token(pt.children[0], TokenType.TYPE)
 
     index = 1
-    if is_next_child_a_token(index, pt, TokenType.NAME):
+    if next_child_and_is_a_token(index, pt, TokenType.NAME):
         index += 1
 
     children_left(index, pt, require_at_least_one=True)
@@ -61,7 +62,7 @@ def _global(pt: ListNode):
     match_token(pt.children[0], TokenType.GLOBAL)
 
     index = 1
-    if is_next_child_a_token(index, pt, TokenType.NAME):
+    if next_child_and_is_a_token(index, pt, TokenType.NAME):
         index += 1
 
     children_left(index, pt, require_at_least_one=True)
@@ -78,7 +79,7 @@ def _global(pt: ListNode):
         match_token(pt.children[index], val_type)
     index += 1
 
-    index = match_zero_or_more_sexp(index, pt, instr_kw, _expr)
+    index = match_zero_or_more_tokens_or_sexp_rule(index, pt, ops, instr_kw, _op, _expr)
 
     children_left(index, pt, require_zero=True)
 
@@ -90,7 +91,7 @@ def _module(pt: ListNode):
     match_token(pt.children[0], TokenType.MODULE)
 
     index = 1
-    if is_next_child_a_token(index, pt, TokenType.NAME):
+    if next_child_and_is_a_token(index, pt, TokenType.NAME):
         index += 1
 
     index = match_zero_or_more_sexp(index, pt, module_fields, module_fields)
