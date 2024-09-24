@@ -31,14 +31,14 @@ python3 -m watfunextr <path-to-wasm-file> <function-name-or-index>
 
 For example:
 ```bash
-python3 -m watfunextr tests/operations.wasm add
+python3 -m watfunextr tests/operations.wasm $add
 ```
 or:
 ```bash
 python3 -m watfunextr tests/operations.wasm 2
 ```
 
-This will create a new WAT module containing only the `add` function and all functions it depends on (with some other
+This will create a new WAT module containing only the `$add` function and all functions it depends on (with some other
 dependencies).
 
 ### Example Output
