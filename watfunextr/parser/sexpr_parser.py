@@ -2,10 +2,10 @@ from watfunextr.parser.pt_validator import validate
 from watfunextr.parser.parser_error import ParserError
 from watfunextr.tokenizer.token import Token
 from watfunextr.tokenizer.token_type import TokenType
-from watfunextr.utils import ListNode, Node
+from watfunextr.utils import ListNode
 
 
-def parse(tokens: list[Token]) -> Node:
+def parse(tokens: list[Token]) -> ListNode:
     if not tokens:
         raise ValueError('The program must include at least one token')
     if tokens[0].token_type != TokenType.LPAR:
