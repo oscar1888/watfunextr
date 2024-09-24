@@ -18,3 +18,6 @@ class Token(Node):
         if isinstance(other, Token):
             return (self.token_type, self.token_value, self.line, self.col) == (other.token_type, other.token_value, other.line, other.col)
         raise NotImplemented
+
+    def __hash__(self):
+        return hash((self.token_type, self.token_value, self.line, self.col))

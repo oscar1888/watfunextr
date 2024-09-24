@@ -26,3 +26,6 @@ class ListNode(Node):
             return ((self.name, self.children, self.line, self.col, self.end_line, self.end_col)
                     == (other.name, other.children, other.line, other.col, other.end_line, other.end_col))
         raise NotImplemented
+
+    def __hash__(self):
+        return hash((self.name, self.children, self.line, self.col, self.end_line, self.end_col))
