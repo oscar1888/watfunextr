@@ -5,7 +5,6 @@ from watfunextr.utils import ListNode
 from watfunextr.utils.misc import indent
 
 _expr_token_names = {t.name for t in instr_kw}
-_op_token_names = {t.name for t in ops}
 
 
 def _write_sexp(sexp: ListNode) -> str:
@@ -14,7 +13,7 @@ def _write_sexp(sexp: ListNode) -> str:
         to_add = []
         next_instr_idx = -1
         for i, child in enumerate(sexp.children):
-            if isinstance(child, ListNode) and child.name in _expr_token_names or isinstance(child, Token) and child in _op_token_names:
+            if isinstance(child, ListNode) and child.name in _expr_token_names or isinstance(child, Token) and child.token_type in ops:
                 next_instr_idx = i
                 break
             to_add.append(child.token_value if isinstance(child, Token) else _write_sexp(child))
@@ -28,8 +27,10 @@ def _write_sexp(sexp: ListNode) -> str:
             child = sexp.children[idx]
             if isinstance(child, Token) and child.token_type in var_as_arg:
                 str_sexp += '\n' + indent(f'{child.token_value} {sexp.children[idx+1].token_value}', 1)
-            else:
+            elif isinstance(child, ListNode):
                 str_sexp += '\n' + indent(_write_sexp(child), 1)
+            else:
+                str_sexp += '\n' + indent(child.token_value, 1)
             idx += 1
 
         return str_sexp + '\n)'
