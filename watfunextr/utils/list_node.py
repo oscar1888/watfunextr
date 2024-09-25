@@ -28,4 +28,4 @@ class ListNode(Node):
         raise NotImplemented
 
     def __hash__(self):
-        return hash((self.name, self.children, self.line, self.col, self.end_line, self.end_col))
+        return hash((self.name, tuple(self.children), self.line, self.col, self.end_line, self.end_col))
