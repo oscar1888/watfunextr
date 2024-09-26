@@ -2,6 +2,7 @@ import unittest
 
 from tests.utils import read
 from watfunextr.extractor import extract
+from watfunextr.extractor import ExtractionError
 from watfunextr.parser import parse
 from watfunextr.tokenizer import tokenize
 from watfunextr.writer import write_from_module_fields
@@ -25,25 +26,25 @@ class Extractor(unittest.TestCase):
         )
 
     def test_invalid_name(self):
-        with self.assertRaises(ValueError) as ctx:
+        with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/invalid_name.wat'))), 'f1')
 
         self.assertEqual(str(ctx.exception), "Function names must start with $ symbol")
 
     def test_non_existent_name(self):
-        with self.assertRaises(ValueError) as ctx:
+        with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/non_existent_name.wat'))), '$b')
 
         self.assertEqual(str(ctx.exception), "There is no function called $b in the WAT module")
 
     def test_negative_fun_index(self):
-        with self.assertRaises(ValueError) as ctx:
+        with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/non_existent_name.wat'))), -2)
 
         self.assertEqual(str(ctx.exception), "Function indexes start from 0")
 
     def test_non_existent_fun_index(self):
-        with self.assertRaises(ValueError) as ctx:
+        with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/non_existent_fun_index.wat'))), 3)
 
         self.assertEqual(str(ctx.exception), "Function at index 3 does not exist")
