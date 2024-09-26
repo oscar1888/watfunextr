@@ -34,6 +34,8 @@ instr_kw = ops | expr_alts
 
 var_as_arg = {TokenType.BR, TokenType.BR_IF, TokenType.CALL, TokenType.LOCAL_INSTR, TokenType.GLOBAL_INSTR}
 
+expr_token_names = {t.name for t in instr_kw}
+
 
 def children_left(index: int, pt: ListNode, require_zero=False, require_at_least_one=False):
     if require_zero and require_at_least_one:
