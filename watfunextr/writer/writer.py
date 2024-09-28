@@ -6,7 +6,7 @@ from watfunextr.utils.misc import indent
 
 
 def _write_sexp(sexp: ListNode) -> str:
-    if sexp.children[0].token_type == TokenType.FUNC:
+    if sexp.children[0].token_type in {TokenType.FUNC, TokenType.BLOCK, TokenType.LOOP, TokenType.IF, TokenType.THEN, TokenType.ELSE}:
         str_sexp: str = '('
         to_add = []
         next_instr_idx = -1
@@ -23,7 +23,7 @@ def _write_sexp(sexp: ListNode) -> str:
         idx = next_instr_idx
         while idx < len(sexp.children):
             child = sexp.children[idx]
-            if isinstance(child, Token) and child.token_type in var_as_arg:
+            if isinstance(child, Token) and (child.token_type in var_as_arg or child.token_type == TokenType.CONST_INSTR):
                 str_sexp += '\n' + indent(f'{child.token_value} {sexp.children[idx+1].token_value}', 1)
                 idx += 1
             elif isinstance(child, ListNode):
