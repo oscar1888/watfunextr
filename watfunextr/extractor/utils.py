@@ -22,7 +22,14 @@ def _func_has_name(func: ListNode):
 
 
 def _get_fun_names(funcs: list[ListNode]) -> dict:
-    return {func.children[1].token_value: i for i, func in enumerate(funcs) if _func_has_name(func)}
+    d = {}
+    for i, func in enumerate(funcs):
+        if _func_has_name(func):
+            if func.children[1].token_value in d:
+                raise ExtractionError('Duplicated function name', (func.children[1].line, func.children[1].col))
+            d[func.children[1].token_value] = i
+
+    return d
 
 
 def _get_funs(pt: ListNode) -> Tuple[list, dict]:
