@@ -1,29 +1,30 @@
-from watfunextr.parser.pt_validator.utils import ops, var_as_arg, expr_token_names
+from watfunextr.parser.pt_validator.utils import var_as_arg
 from watfunextr.tokenizer.token import Token
 from watfunextr.tokenizer.token_type import TokenType
 from watfunextr.utils import ListNode
-from watfunextr.utils.misc import indent
+from watfunextr.utils.misc import indent, get_or_search_idx, is_an_instr
+
+_to_indent_sexps = {TokenType.FUNC, TokenType.BLOCK, TokenType.LOOP, TokenType.IF, TokenType.THEN, TokenType.ELSE}
+
+_one_arg_tokens = var_as_arg | {TokenType.CONST_INSTR}
+
+
+def _write_node(c):
+    return c.token_value if isinstance(c, Token) else _write_sexp(c)
 
 
 def _write_sexp(sexp: ListNode) -> str:
-    if sexp.children[0].token_type in {TokenType.FUNC, TokenType.BLOCK, TokenType.LOOP, TokenType.IF, TokenType.THEN, TokenType.ELSE}:
+    if sexp.children[0].token_type in _to_indent_sexps:
         str_sexp: str = '('
-        to_add = []
-        next_instr_idx = -1
-        for i, child in enumerate(sexp.children):
-            if isinstance(child, ListNode) and child.name in expr_token_names or isinstance(child, Token) and child.token_type in ops:
-                next_instr_idx = i
-                break
-            to_add.append(child.token_value if isinstance(child, Token) else _write_sexp(child))
-        str_sexp += ' '.join(to_add)
 
-        if next_instr_idx == -1:
-            return str_sexp + ')'
+        next_instr_idx = get_or_search_idx(sexp, is_an_instr)
+        str_sexp += ' '.join(_write_node(c) for c in sexp.children[:next_instr_idx])
+        if next_instr_idx is None: return str_sexp + ')'
 
         idx = next_instr_idx
         while idx < len(sexp.children):
             child = sexp.children[idx]
-            if isinstance(child, Token) and (child.token_type in var_as_arg or child.token_type == TokenType.CONST_INSTR):
+            if isinstance(child, Token) and child.token_type in _one_arg_tokens:
                 str_sexp += '\n' + indent(f'{child.token_value} {sexp.children[idx+1].token_value}', 1)
                 idx += 1
             elif isinstance(child, ListNode):
@@ -34,7 +35,7 @@ def _write_sexp(sexp: ListNode) -> str:
 
         return str_sexp + '\n)'
 
-    return '(' + ' '.join(sexp.children[i].token_value if isinstance(sexp.children[i], Token) else _write_sexp(sexp.children[i]) for i in range(len(sexp.children))) + ')'
+    return '(' + ' '.join(_write_node(c) for c in sexp.children) + ')'
 
 
 def write_from_module_fields(module_fields: list[ListNode]) -> str:

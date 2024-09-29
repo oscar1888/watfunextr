@@ -1,13 +1,9 @@
-from watfunextr.extractor.utils import _get_or_search_idx, _is_sexp_of, _process_name_or_idx
-from watfunextr.parser.pt_validator.utils import var_as_arg, ops, expr_token_names
+from watfunextr.extractor.utils import _is_sexp_of, _process_name_or_idx
+from watfunextr.parser.pt_validator.utils import var_as_arg
 from watfunextr.tokenizer.token import Token
 from watfunextr.tokenizer.token_type import TokenType
-from watfunextr.utils import ListNode, Node
-
-
-def _is_an_instr(child: Node) -> bool:
-    return (isinstance(child, Token) and child.token_type in ops
-            or isinstance(child, ListNode) and child.name in expr_token_names)
+from watfunextr.utils import ListNode
+from watfunextr.utils.misc import is_an_instr, get_or_search_idx
 
 
 def _token_handler(t: Token, sexp: ListNode, idx: int, functions: list[ListNode], name2idx: dict, adjacents: list) -> int:
@@ -21,8 +17,8 @@ def _token_handler(t: Token, sexp: ListNode, idx: int, functions: list[ListNode]
 
 
 def _if_handler(sexp: ListNode, adjacents: list, functions: list[ListNode], name2idx: dict):
-    then_idx = _get_or_search_idx(sexp, _is_sexp_of(TokenType.THEN))
-    else_idx = _get_or_search_idx(sexp, _is_sexp_of(TokenType.ELSE))
+    then_idx = get_or_search_idx(sexp, _is_sexp_of(TokenType.THEN))
+    else_idx = get_or_search_idx(sexp, _is_sexp_of(TokenType.ELSE))
     adjacents.extend(_get_adjacents(sexp, functions, name2idx, None, then_idx))
     adjacents.extend(_get_adjacents(sexp.children[then_idx], functions, name2idx))
     if else_idx is not None:
@@ -45,7 +41,7 @@ def _sexp_handler(sexp: ListNode, adjacents: list, functions: list[ListNode], na
 
 
 def _get_adjacents(sexp: ListNode, functions: list[ListNode], name2idx: dict, start_idx: int = None, not_instr_idx: int = None):
-    instr_start_idx = _get_or_search_idx(sexp, _is_an_instr, start_idx)
+    instr_start_idx = get_or_search_idx(sexp, is_an_instr, start_idx)
     if instr_start_idx is None: return []
 
     adjacents = []

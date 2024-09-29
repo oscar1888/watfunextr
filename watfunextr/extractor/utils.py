@@ -32,16 +32,6 @@ def _get_module_fields(pt: ListNode, token_type: TokenType):
     return [c for c in pt.children if _is_sexp_of(token_type)(c)]
 
 
-def _get_or_search_idx(where_to_search_sexp: ListNode, predicate, idx: int = None):
-    if idx is not None: return idx
-
-    for i, child in enumerate(where_to_search_sexp.children):
-        if predicate(child):
-            return i
-
-    return None
-
-
 def _update_idxs(idxs_to_update, old_list, name2idx, old2new_idxs):
     for children, idx in idxs_to_update:
         arg = children[idx].token_value
