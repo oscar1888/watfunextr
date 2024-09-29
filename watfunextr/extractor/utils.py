@@ -15,26 +15,25 @@ def _is_an_instr(child: Node) -> bool:
             or isinstance(child, ListNode) and child.name in expr_token_names)
 
 
-def _func_has_name(func: ListNode):
-    return (len(func.children) >= 2
-            and isinstance(func.children[1], Token)
-            and func.children[1].token_type == TokenType.NAME)
+def _has_name(sexp: ListNode):
+    return (len(sexp.children) >= 2
+            and isinstance(sexp.children[1], Token)
+            and sexp.children[1].token_type == TokenType.NAME)
 
 
-def _get_fun_names(funcs: list[ListNode]) -> dict:
+def _get_name2idx(l: list[ListNode]):
     d = {}
-    for i, func in enumerate(funcs):
-        if _func_has_name(func):
-            if func.children[1].token_value in d:
-                raise ExtractionError('Duplicated function name', (func.children[1].line, func.children[1].col))
-            d[func.children[1].token_value] = i
+    for i, el in enumerate(l):
+        if _has_name(el):
+            if el.children[1].token_value in d:
+                raise ExtractionError('Duplicated name', (el.children[1].line, el.children[1].col))
+            d[el.children[1].token_value] = i
 
     return d
 
 
-def _get_funs(pt: ListNode) -> Tuple[list, dict]:
-    funcs = [child for child in pt.children if _is_sexp_of(TokenType.FUNC)(child)]
-    return funcs, _get_fun_names(funcs)
+def _get_module_fields(pt: ListNode, token_type: TokenType):
+    return [c for c in pt.children if _is_sexp_of(token_type)(c)]
 
 
 def _get_or_search_idx(where_to_search_sexp: ListNode, predicate, idx: int = None):
@@ -45,17 +44,16 @@ def _get_or_search_idx(where_to_search_sexp: ListNode, predicate, idx: int = Non
             return i
 
 
-def _get_fun_idx(fun_idx_or_name: Union[int, str], functions: list[ListNode], name2idx: dict,
-                 line_col: Tuple[int, int] = None) -> int:
-    if isinstance(fun_idx_or_name, int):
-        if fun_idx_or_name < 0:
-            raise ExtractionError('Function indexes start from 0', line_col)
-        if fun_idx_or_name >= len(functions):
-            raise ExtractionError(f'Function at index {fun_idx_or_name} does not exist', line_col)
+def _get_idx(idx_or_name: Union[int, str], old_list: list[ListNode], name2idx: dict, line_col: Tuple[int, int] = None) -> int:
+    if isinstance(idx_or_name, int):
+        if idx_or_name < 0:
+            raise ExtractionError('Indexes start from 0', line_col)
+        if idx_or_name >= len(old_list):
+            raise ExtractionError(f'Index {idx_or_name} does not exist', line_col)
     else:
-        if not fun_idx_or_name or fun_idx_or_name[0] != '$':
-            raise ExtractionError('Function names must start with $ symbol', line_col)
-        if fun_idx_or_name not in name2idx:
-            raise ExtractionError(f'There is no function called {fun_idx_or_name} in the WAT module', line_col)
+        if not idx_or_name or idx_or_name[0] != '$':
+            raise ExtractionError('Names must start with $ symbol', line_col)
+        if idx_or_name not in name2idx:
+            raise ExtractionError(f'{idx_or_name} is not a name in the WAT module', line_col)
 
-    return name2idx[fun_idx_or_name] if isinstance(fun_idx_or_name, str) else fun_idx_or_name
+    return name2idx[idx_or_name] if isinstance(idx_or_name, str) else idx_or_name

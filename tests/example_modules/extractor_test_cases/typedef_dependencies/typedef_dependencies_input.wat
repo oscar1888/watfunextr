@@ -1,0 +1,27 @@
+(module $m1
+    (type (func))
+    (type $second (func (param i32) (result i32)))
+    (func $is_even (type 1)
+        (if (result i32)
+            (i32.eqz (local.get $n))
+            (then (i32.const 1))
+            (else (call $is_odd (i32.sub (local.get $n) (i32.const 1))))
+        )
+    )
+    (type (func (param f32)))
+    (func $is_odd (type $second)
+        (if (result i32)
+            (i32.eqz (local.get $n))
+            (then (i32.const 0))
+            (else (call $is_even (i32.sub (local.get $n) (i32.const 1))))
+        )
+        call $f1
+    )
+    (type (func (param f32) (result f32)))
+    (func $f1 (type 3)
+        nop
+    )
+    (func $f2 (type 2)
+        nop
+    )
+)

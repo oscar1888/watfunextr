@@ -1,5 +1,6 @@
 from typing import Union
-from watfunextr.extractor.utils import _get_fun_idx, _get_funs, _get_or_search_idx, _is_sexp_of, _is_an_instr
+from watfunextr.extractor.utils import _get_idx, _get_or_search_idx, _is_sexp_of, _is_an_instr, _get_name2idx, \
+    _get_module_fields
 from watfunextr.parser.pt_validator.utils import var_as_arg
 from watfunextr.tokenizer.token import Token
 from watfunextr.tokenizer.token_type import TokenType
@@ -12,7 +13,7 @@ def _token_handler(t: Token, sexp: ListNode, idx: int, functions: list[ListNode]
             fun_name_or_idx = sexp.children[idx + 1]
             arg = fun_name_or_idx.token_value
             if arg.isdigit(): arg = int(arg)
-            fun_idx = _get_fun_idx(arg, functions, name2idx, (fun_name_or_idx.line, fun_name_or_idx.col))
+            fun_idx = _get_idx(arg, functions, name2idx, (fun_name_or_idx.line, fun_name_or_idx.col))
             adjacents.append((fun_idx, (sexp.children, idx+1)))
         idx += 1
 
@@ -79,25 +80,67 @@ def _navigate_fun_call_graph(functions: list[ListNode], name2idx: dict, fun_idx:
     return old_to_new_idxs, fun_idx_to_update
 
 
-def _update_fun_idx_in_calls(fun_idx_to_update, functions, name2idx, visited):
-    for children, idx in fun_idx_to_update:
+def _update_idxs(idxs_to_update, old_list, name2idx, old2new_idxs):
+    for children, idx in idxs_to_update:
         arg = children[idx].token_value
         if arg.isdigit(): arg = int(arg)
-        fun_idx = _get_fun_idx(arg, functions, name2idx, (children[idx].line, children[idx].col))
-        children[idx] = Token(TokenType.NAT, str(visited[fun_idx]), 1, 1)
+        mf_idx = _get_idx(arg, old_list, name2idx, (children[idx].line, children[idx].col))
+        children[idx] = Token(TokenType.NAT, str(old2new_idxs[mf_idx]), 1, 1)
 
 
-def _get_fun_with_dependencies(functions: list[ListNode], name2idx: dict, fun_idx: int):
-    visited, fun_idx_to_update = _navigate_fun_call_graph(functions, name2idx, fun_idx)
-    _update_fun_idx_in_calls(fun_idx_to_update, functions, name2idx, visited)
+def _typedef_handler(fun, old2new_idxs, idxs_to_update, info):
+    if len(fun.children) >= 2 and _is_sexp_of(TokenType.TYPE)(fun.children[1]):
+        fun_child_idx = 1
+    elif len(fun.children) >= 3 and _is_sexp_of(TokenType.TYPE)(fun.children[2]):
+        fun_child_idx = 2
+    else:
+        return
 
-    return list(map(lambda e: functions[e], visited.keys()))
+    sexp = fun.children[fun_child_idx]
+    name_or_idx = sexp.children[1]
+    arg = name_or_idx.token_value
+    if arg.isdigit(): arg = int(arg)
+    idx = _get_idx(arg, info[0], info[1], (name_or_idx.line, name_or_idx.col))
+
+    if idx not in old2new_idxs:
+        old2new_idxs[idx] = len(old2new_idxs)
+    idxs_to_update.append((sexp.children, 1))
+
+
+def _search_in_funs(new_funs, info, fun_handler):
+    old2new_idxs = {}
+    idxs_to_update = []
+
+    for fun in new_funs:
+        fun_handler(fun, old2new_idxs, idxs_to_update, info)
+
+    return old2new_idxs, idxs_to_update
+
+
+def _get_fun_with_dependencies(function_info, typedef_info, fun_idx: int):
+    module_fields = []
+
+    old2new_fun_idxs, fun_idx_to_update = _navigate_fun_call_graph(function_info[0], function_info[1], fun_idx)
+    _update_idxs(fun_idx_to_update, function_info[0], function_info[1], old2new_fun_idxs)
+    new_funs = list(map(lambda e: function_info[0][e], old2new_fun_idxs.keys()))
+    module_fields.extend(new_funs)
+
+    old2new_typedef_idxs, type_idx_to_update = _search_in_funs(new_funs, typedef_info, _typedef_handler)
+    _update_idxs(type_idx_to_update, typedef_info[0], typedef_info[1], old2new_typedef_idxs)
+    new_typedefs = list(map(lambda e: typedef_info[0][e], old2new_typedef_idxs.keys()))
+    module_fields.extend(new_typedefs)
+
+    return module_fields
 
 
 def extract(pt: ListNode, fun_idx_or_name: Union[int, str]):
-    functions, name2idx = _get_funs(pt)
-    fun_idx = _get_fun_idx(fun_idx_or_name, functions, name2idx)
+    functions = _get_module_fields(pt, TokenType.FUNC)
+    name2idx_funs = _get_name2idx(functions)
+    fun_idx = _get_idx(fun_idx_or_name, functions, name2idx_funs)
 
-    module_fields = _get_fun_with_dependencies(functions, name2idx, fun_idx)
+    typedefs = _get_module_fields(pt, TokenType.TYPE)
+    name2idx_typedefs = _get_name2idx(typedefs)
+
+    module_fields = _get_fun_with_dependencies((functions, name2idx_funs), (typedefs, name2idx_typedefs), fun_idx)
 
     return module_fields

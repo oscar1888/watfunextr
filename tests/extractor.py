@@ -29,37 +29,37 @@ class Extractor(unittest.TestCase):
         with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/invalid_name.wat'))), 'f1')
 
-        self.assertEqual(str(ctx.exception), "Function names must start with $ symbol")
+        self.assertEqual(str(ctx.exception), "Names must start with $ symbol")
 
     def test_non_existent_name(self):
         with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/non_existent_name.wat'))), '$b')
 
-        self.assertEqual(str(ctx.exception), "There is no function called $b in the WAT module")
+        self.assertEqual(str(ctx.exception), "$b is not a name in the WAT module")
 
     def test_negative_fun_index(self):
         with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/non_existent_name.wat'))), -2)
 
-        self.assertEqual(str(ctx.exception), "Function indexes start from 0")
+        self.assertEqual(str(ctx.exception), "Indexes start from 0")
 
     def test_non_existent_fun_index(self):
         with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/non_existent_fun_index.wat'))), 3)
 
-        self.assertEqual(str(ctx.exception), "Function at index 3 does not exist")
+        self.assertEqual(str(ctx.exception), "Index 3 does not exist")
 
     def test_module_with_illegal_fun_call_idx(self):
         with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/module_with_illegal_fun_call_idx.wat'))), '$c')
 
-        self.assertEqual(str(ctx.exception), "Extraction error at 11:14: Function at index 7 does not exist")
+        self.assertEqual(str(ctx.exception), "Extraction error at 11:14: Index 7 does not exist")
 
     def test_module_with_illegal_fun_call_name(self):
         with self.assertRaises(ExtractionError) as ctx:
             extract(parse(tokenize(read('extractor_test_cases/module_with_illegal_fun_call_name.wat'))), '$c')
 
-        self.assertEqual(str(ctx.exception), "Extraction error at 6:14: There is no function called $add in the WAT module")
+        self.assertEqual(str(ctx.exception), "Extraction error at 6:14: $add is not a name in the WAT module")
 
     def test_one_fun_dependency(self):
         self.assertEqual(
@@ -179,6 +179,14 @@ class Extractor(unittest.TestCase):
                 'extractor_test_cases/calls_in_block/calls_in_block_input.wat'
             ))), '$f1')),
             read('extractor_test_cases/calls_in_block/calls_in_block_output.wat')
+        )
+
+    def test_typedef_dependencies(self):
+        self.assertEqual(
+            write_from_module_fields(extract(parse(tokenize(read(
+                'extractor_test_cases/typedef_dependencies/typedef_dependencies_input.wat'
+            ))), '$is_even')),
+            read('extractor_test_cases/typedef_dependencies/typedef_dependencies_output.wat')
         )
 
 
