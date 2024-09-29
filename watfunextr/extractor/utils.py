@@ -1,18 +1,14 @@
 from typing import Tuple, Union
 from watfunextr.extractor import ExtractionError
-from watfunextr.parser.pt_validator.utils import ops, expr_token_names
 from watfunextr.tokenizer.token import Token
 from watfunextr.tokenizer.token_type import TokenType
-from watfunextr.utils import Node, ListNode
+from watfunextr.utils import ListNode
 
 
 def _is_sexp_of(token_type: TokenType):
-    return lambda sexp: isinstance(sexp, ListNode) and sexp.name == token_type.name
-
-
-def _is_an_instr(child: Node) -> bool:
-    return (isinstance(child, Token) and child.token_type in ops
-            or isinstance(child, ListNode) and child.name in expr_token_names)
+    def specific_is_sexp_of(sexp):
+        return isinstance(sexp, ListNode) and sexp.name == token_type.name
+    return specific_is_sexp_of
 
 
 def _has_name(sexp: ListNode):
@@ -42,6 +38,32 @@ def _get_or_search_idx(where_to_search_sexp: ListNode, predicate, idx: int = Non
     for i, child in enumerate(where_to_search_sexp.children):
         if predicate(child):
             return i
+
+    return None
+
+
+def _update_idxs(idxs_to_update, old_list, name2idx, old2new_idxs):
+    for children, idx in idxs_to_update:
+        arg = children[idx].token_value
+        if arg.isdigit(): arg = int(arg)
+        mf_idx = _get_idx(arg, old_list, name2idx, (children[idx].line, children[idx].col))
+        children[idx] = Token(TokenType.NAT, str(old2new_idxs[mf_idx]), 1, 1)
+
+
+def _search_in_funs(new_funs, info, fun_handler):
+    old2new_idxs = {}
+    idxs_to_update = []
+
+    for fun in new_funs:
+        fun_handler(fun, old2new_idxs, idxs_to_update, info)
+
+    return old2new_idxs, idxs_to_update
+
+
+def _process_name_or_idx(name_or_idx, info):
+    arg = name_or_idx.token_value
+    if arg.isdigit(): arg = int(arg)
+    return _get_idx(arg, info[0], info[1], (name_or_idx.line, name_or_idx.col))
 
 
 def _get_idx(idx_or_name: Union[int, str], old_list: list[ListNode], name2idx: dict, line_col: Tuple[int, int] = None) -> int:
