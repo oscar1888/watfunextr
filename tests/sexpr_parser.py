@@ -71,7 +71,7 @@ class SExprParser(unittest.TestCase):
         with self.assertRaises(ParserError) as ctx:
             parse(tokenize(read('parser_test_cases/unclosed_par.wat')))
 
-        self.assertEqual(str(ctx.exception), 'Syntax error: there are 2 unclosed parenthesis')
+        self.assertEqual(str(ctx.exception), 'Syntax error: There are 2 unclosed parenthesis')
 
     def test_empty_par(self):
         with self.assertRaises(ParserError) as ctx:
@@ -111,7 +111,7 @@ class SExprParser(unittest.TestCase):
         with self.assertRaises(ParserError) as ctx:
             parse(tokenize(read('parser_test_cases/typedef/required_inner_sexp_not_present.wat')))
 
-        self.assertEqual(str(ctx.exception), "Syntax error at 1:17: unexpected ')'")
+        self.assertEqual(str(ctx.exception), "Syntax error at 1:17: Unexpected ')'")
 
     def test_swapped_rules_in_inner_sexp(self):
         with self.assertRaises(ParserError) as ctx:
@@ -375,7 +375,7 @@ class SExprParser(unittest.TestCase):
         with self.assertRaises(ParserError) as ctx:
             parse(tokenize(read('parser_test_cases/global/val_type_missing_in_global_type_sexp.wat')))
 
-        self.assertEqual(str(ctx.exception), "Syntax error at 2:17: unexpected ')'")
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:17: Unexpected ')'")
 
     def test_global_type_as_val_type(self):
         self.assertEqual(
@@ -393,7 +393,7 @@ class SExprParser(unittest.TestCase):
         with self.assertRaises(ParserError) as ctx:
             parse(tokenize(read('parser_test_cases/global/global_type_missing.wat')))
 
-        self.assertEqual(str(ctx.exception), "Syntax error at 2:15: unexpected ')'")
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:15: Unexpected ')'")
 
     def test_unexpected_in_inner_global_type_sexp(self):
         with self.assertRaises(ParserError) as ctx:

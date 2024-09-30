@@ -31,16 +31,16 @@ class Extractor(unittest.TestCase):
         self.positive_test('simple_extraction_with_valid_name', '$b')
 
     def test_invalid_name(self):
-        self.negative_test('invalid_name', 'f1', 'Names must start with $ symbol')
+        self.negative_test('invalid_name', 'f1', 'Extraction error: Names must start with $ symbol')
 
     def test_non_existent_name(self):
-        self.negative_test('non_existent_name', '$b', '$b is not a name in the WAT module')
+        self.negative_test('non_existent_name', '$b', 'Extraction error: $b is not a name in the WAT module')
 
     def test_negative_fun_index(self):
-        self.negative_test('non_existent_name', -2, 'Indexes start from 0')
+        self.negative_test('non_existent_name', -2, 'Extraction error: Indexes start from 0')
 
     def test_non_existent_fun_index(self):
-        self.negative_test('non_existent_fun_index', 3, 'Index 3 does not exist')
+        self.negative_test('non_existent_fun_index', 3, 'Extraction error: Index 3 does not exist')
 
     def test_module_with_illegal_fun_call_idx(self):
         self.negative_test('module_with_illegal_fun_call_idx', '$c', 'Extraction error at 11:14: Index 7 does not exist')

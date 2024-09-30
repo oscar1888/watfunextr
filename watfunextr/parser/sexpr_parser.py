@@ -33,7 +33,7 @@ def parse(tokens: list[Token]) -> ListNode:
                 open_par_stack[-1][0][-1] = ListNode(popped[1], popped[2], token.line, token.col, 'List', *popped[0])
 
     if open_par_stack:
-        raise ParserError(f'Syntax error: there {"are" if len(open_par_stack) > 1 else "is"} {len(open_par_stack)} unclosed parenthesis')
+        raise ParserError(f'There {"are" if len(open_par_stack) > 1 else "is"} {len(open_par_stack)} unclosed parenthesis')
 
     validate(module_tree)
 

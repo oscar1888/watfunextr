@@ -149,13 +149,13 @@ class TokenizerTest(unittest.TestCase):
         with self.assertRaises(TokenizerError) as ctx:
             tokenize(read('tokenizer_test_cases/unexpected_token.wat'))
 
-        self.assertEqual(str(ctx.exception), 'Unexpected token at 2:6: funz')
+        self.assertEqual(str(ctx.exception), 'Lexer error: Unexpected token at 2:6: funz')
 
     def test_unexpected_token_module_2(self):
         with self.assertRaises(TokenizerError) as ctx:
             tokenize(read('tokenizer_test_cases/unexpected_token_2.wat'))
 
-        self.assertEqual(str(ctx.exception), 'Unexpected token at 3:1: extra')
+        self.assertEqual(str(ctx.exception), 'Lexer error: Unexpected token at 3:1: extra')
 
     def test_empty_module(self):
         with self.assertRaises(ValueError) as ctx:

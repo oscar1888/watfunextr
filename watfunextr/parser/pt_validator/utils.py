@@ -47,7 +47,7 @@ def children_left(index: int, pt: ListNode, require_zero=False, require_at_least
             raise ParserError(pt.children[index])
         return
     if index >= len(pt.children):
-        raise ParserError(f"Syntax error at {pt.end_line}:{pt.end_col}: unexpected ')'")
+        raise ParserError(f"Unexpected ')'", line_col=(pt.end_line, pt.end_col))
 
 
 def tokentype_set(token_type: Union[dict, set, TokenType]):
