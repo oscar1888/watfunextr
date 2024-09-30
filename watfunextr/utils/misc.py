@@ -1,6 +1,9 @@
-from watfunextr.parser.pt_validator.utils import ops, expr_token_names
+from watfunextr.parser.pt_validator.utils import ops, expr_token_names, var_as_arg
 from watfunextr.tokenizer.token import Token
+from watfunextr.tokenizer.token_type import TokenType
 from watfunextr.utils import ListNode, Node
+
+one_arg_tokens = var_as_arg | {TokenType.CONST_INSTR}
 
 
 def indent(text: str, lvl: int, tab_size: int = 4):

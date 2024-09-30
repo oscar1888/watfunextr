@@ -96,6 +96,9 @@ class Extractor(unittest.TestCase):
     def test_typedef_dependencies(self):
         self.positive_test('typedef_dependencies', '$is_even')
 
+    def test_global_dependencies(self):
+        self.positive_test('global_dependencies', '$doit')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,12 +1,9 @@
-from watfunextr.parser.pt_validator.utils import var_as_arg
 from watfunextr.tokenizer.token import Token
 from watfunextr.tokenizer.token_type import TokenType
 from watfunextr.utils import ListNode
-from watfunextr.utils.misc import indent, get_or_search_idx, is_an_instr
+from watfunextr.utils.misc import indent, get_or_search_idx, is_an_instr, one_arg_tokens
 
 _to_indent_sexps = {TokenType.FUNC, TokenType.BLOCK, TokenType.LOOP, TokenType.IF, TokenType.THEN, TokenType.ELSE}
-
-_one_arg_tokens = var_as_arg | {TokenType.CONST_INSTR}
 
 
 def _write_node(c):
@@ -24,7 +21,7 @@ def _write_sexp(sexp: ListNode) -> str:
         idx = next_instr_idx
         while idx < len(sexp.children):
             child = sexp.children[idx]
-            if isinstance(child, Token) and child.token_type in _one_arg_tokens:
+            if isinstance(child, Token) and child.token_type in one_arg_tokens:
                 str_sexp += '\n' + indent(f'{child.token_value} {sexp.children[idx+1].token_value}', 1)
                 idx += 1
             elif isinstance(child, ListNode):

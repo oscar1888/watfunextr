@@ -1,35 +1,54 @@
-from typing import Union
+from typing import Union, Tuple
 from watfunextr.extractor.func_extraction import _navigate_fun_call_graph
+from watfunextr.extractor.global_extraction import _global_handler
 from watfunextr.extractor.typedef_extraction import _typedef_handler
 from watfunextr.extractor.utils import _get_idx, _get_name2idx, _get_module_fields, _update_idxs, _search_in_funs
 from watfunextr.tokenizer.token_type import TokenType
 from watfunextr.utils import ListNode
 
 
-def _get_fun_with_dependencies(function_info, typedef_info, fun_idx: int):
+def _get_mfs_from_dict_keys(d: dict, info: Tuple) -> list:
+    return list(map(lambda e: info[0][e], d.keys()))
+
+
+def _update_src_and_add_mfs(funs_or_search_res: Union[list, Tuple], info: Tuple[list, dict], module_fields: list, handler=None):
+    old2new_idxs, idxs_to_update = (
+        _search_in_funs(funs_or_search_res, info, handler)
+        if isinstance(funs_or_search_res, list)
+        else funs_or_search_res
+    )
+    _update_idxs(idxs_to_update, info, old2new_idxs)
+    new_mfs = _get_mfs_from_dict_keys(old2new_idxs, info)
+    module_fields.extend(new_mfs)
+    return new_mfs
+
+
+def _get_fun_with_dependencies(info_mapping: dict, fun_idx: int):
     module_fields = []
 
-    old2new_fun_idxs, fun_idx_to_update = _navigate_fun_call_graph(function_info[0], function_info[1], fun_idx)
-    _update_idxs(fun_idx_to_update, function_info[0], function_info[1], old2new_fun_idxs)
-    new_funs = list(map(lambda e: function_info[0][e], old2new_fun_idxs.keys()))
-    module_fields.extend(new_funs)
+    search_fun_res = _navigate_fun_call_graph(info_mapping[TokenType.FUNC.name], fun_idx)
+    new_funs = _update_src_and_add_mfs(search_fun_res, info_mapping[TokenType.FUNC.name], module_fields)
 
-    old2new_typedef_idxs, type_idx_to_update = _search_in_funs(new_funs, typedef_info, _typedef_handler)
-    _update_idxs(type_idx_to_update, typedef_info[0], typedef_info[1], old2new_typedef_idxs)
-    new_typedefs = list(map(lambda e: typedef_info[0][e], old2new_typedef_idxs.keys()))
-    module_fields.extend(new_typedefs)
+    _update_src_and_add_mfs(new_funs, info_mapping[TokenType.TYPE.name], module_fields, _typedef_handler)
+    _update_src_and_add_mfs(new_funs, info_mapping[TokenType.GLOBAL.name], module_fields, _global_handler)
 
     return module_fields
 
 
+def _fill_info(pt, info_mapping, token_type: TokenType):
+    mfs = _get_module_fields(pt, token_type)
+    name2idx = _get_name2idx(mfs)
+    info_mapping[token_type.name] = (mfs, name2idx)
+
+
 def extract(pt: ListNode, fun_idx_or_name: Union[int, str]):
-    functions = _get_module_fields(pt, TokenType.FUNC)
-    name2idx_funs = _get_name2idx(functions)
-    fun_idx = _get_idx(fun_idx_or_name, functions, name2idx_funs)
+    info_mapping = {}
 
-    typedefs = _get_module_fields(pt, TokenType.TYPE)
-    name2idx_typedefs = _get_name2idx(typedefs)
+    _fill_info(pt, info_mapping, TokenType.FUNC)
+    _fill_info(pt, info_mapping, TokenType.TYPE)
+    _fill_info(pt, info_mapping, TokenType.GLOBAL)
 
-    module_fields = _get_fun_with_dependencies((functions, name2idx_funs), (typedefs, name2idx_typedefs), fun_idx)
+    fun_idx = _get_idx(fun_idx_or_name, info_mapping[TokenType.FUNC.name])
+    module_fields = _get_fun_with_dependencies(info_mapping, fun_idx)
 
     return module_fields
