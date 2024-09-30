@@ -18,7 +18,6 @@ You can install `watfunextr` by cloning this repository and installing the requi
 ```bash
 git clone https://github.com/oscar1888/watfunextr.git
 cd watfunextr
-pip install -r requirements.txt
 ```
 
 ## Usage
@@ -26,25 +25,20 @@ pip install -r requirements.txt
 
 To extract a specific function from a WAT module, use the following command:
 ```bash
-python3 -m watfunextr <path-to-wasm-file> <function-name-or-index>
+python3 -m watfunextr <path-to-wat-module> <function-name-or-index>
 ```
 
 For example:
 ```bash
-python3 -m watfunextr tests/operations.wasm '$add'
+python3 -m watfunextr simple_extraction_input.wat '$add'
 ```
 or:
 ```bash
-python3 -m watfunextr tests/operations.wasm 2
+python3 -m watfunextr simple_extraction_input.wat 2
 ```
 
-This will create a new WAT module containing only the `$add` function and all functions it depends on (with some other
-dependencies).
-
-### Output
-
-The tool will output a new WAT file named `function_<function-name-or-index>_extracted.wat` in the current directory,
-containing only the requested function and its dependencies.
+The tool will output a new minimal WAT file named `function_<function-name-or-index>_extracted.wat` in the current directory,
+containing only the requested function and the module fields it depends on.
 
 ## License
 
