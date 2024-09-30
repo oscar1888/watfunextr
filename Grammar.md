@@ -9,6 +9,10 @@ The idea behind choosing a subset of the original grammar is to make a WAT modul
 <module_field> ::= <typedef>
                 |  <func>
                 |  <global>
+                |  <export>
+
+<export> ::= '(' 'export' <STRING> <exkind> ')'
+<exkind> ::= '(' ('func'|'global') <var> ')'
 
 <global> ::= '(' 'global' <NAME>? <global_type> <instr>* ')'
 
@@ -61,10 +65,10 @@ The idea behind choosing a subset of the original grammar is to make a WAT modul
 
 ### Information about tokens:
 ```
-<NAME>: $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
-<NUM_TYPE>: i32 | i64 | f32 | f64
-<NAT>: integers without sign prefix
+<NAME>: $(<LETTER> | <DIGIT> | '_' | '.' | '+' | '-' | '*' | '/' | '\' | '^' | '~' | '=' | '<' | '>' | '!' | '?' | '@' | '#' | '$' | '%' | '&' | '|' | ':' | ''' | '`')+
+<NUM_TYPE>: 'i32' | 'i64' | 'f32' | 'f64'
 <NUM>: <INT> | <FLOAT>
+<NAT>: integers without sign prefix
 <INT>: integers with sign prefix
 <CONST_INSTR>, <INT_INSTR> e <FLOAT_INSTR> are instructions of constant (e.g. i32.const), int (e.g. i32.add) and float (e.g. f64.sub) respectively.
 ```
