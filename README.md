@@ -31,7 +31,7 @@ python3 -m watfunextr <path-to-wasm-file> <function-name-or-index>
 
 For example:
 ```bash
-python3 -m watfunextr tests/operations.wasm $add
+python3 -m watfunextr tests/operations.wasm '$add'
 ```
 or:
 ```bash
