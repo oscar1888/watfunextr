@@ -37,9 +37,11 @@ class TokenType(Enum):
     ELSE = 28
     MUT = 29
     GLOBAL = 30
+    EXPORT = 31
 
     # Values
-    NAME = 31
-    NAT = 32
-    NUM = 33
-    NUM_TYPE = 34
+    NAME = 32
+    NAT = 33
+    NUM = 34
+    NUM_TYPE = 35
+    STRING = 36

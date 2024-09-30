@@ -130,6 +130,20 @@ FLOAT_GEN_INSTR = FXX + r'\.(' + \
 FLOAT_INSTR = '(' + F32_CONV + ')' + '|' + '(' + F64_CONV + ')' + '|' + '(' + FLOAT_GEN_INSTR + ')'
 INT_INSTR = '(' + I32_CONV + ')' + '|' + '(' + I64_CONV + ')' + '|' + '(' + INT_GEN_INSTR + ')'
 
+Char = '[^"\\\u0000-\u001f\ud800-\udfff\u007f]'
+String = '"' + '(' + \
+         '|' + '\u0009' + \
+         '|' + r'\\n' + \
+         '|' + r'\\r' + \
+         '|' + r'\\"' + \
+         '|' + r'\\′' + \
+         '|' + r'\\\\' + \
+         '|' + r'\\' + HexDigit + HexDigit + \
+         '|' + r'\\' + r'u\{' + HexNum + r'\}' + \
+         '|' + Char \
+         + ')*' + '"'
+
+
 token_patterns = {
     # Separators
     TokenType.WHITESPACE: r'[ \t\r\n]',
@@ -166,10 +180,12 @@ token_patterns = {
     TokenType.ELSE: 'else',
     TokenType.MUT: 'mut',
     TokenType.GLOBAL: 'global',
+    TokenType.EXPORT: 'export',
 
     # Values
     TokenType.NAME: Name,
     TokenType.NUM: '(' + Float + ')' + '|' + '(' + Int + ')',
     TokenType.NAT: Nat,
     TokenType.NUM_TYPE: NXX,
+    TokenType.STRING: String,
 }

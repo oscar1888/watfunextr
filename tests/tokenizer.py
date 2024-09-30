@@ -163,6 +163,24 @@ class TokenizerTest(unittest.TestCase):
 
         self.assertEqual(str(ctx.exception), 'WAT program cannot be empty')
 
+    def test_string(self):
+        self.assertEqual(
+            tokenize(read('tokenizer_test_cases/string.wat')),
+            [
+                Token(TokenType.LPAR, '(', 1, 1),
+                Token(TokenType.MODULE, 'module', 1, 2),
+                Token(TokenType.LPAR, '(', 2, 5),
+                Token(TokenType.EXPORT, 'export', 2, 6),
+                Token(TokenType.STRING, '"this \\"is a test"', 2, 13),
+                Token(TokenType.LPAR, '(', 2, 32),
+                Token(TokenType.GLOBAL, 'global', 2, 33),
+                Token(TokenType.NAT, '0', 2, 40),
+                Token(TokenType.RPAR, ')', 2, 41),
+                Token(TokenType.RPAR, ')', 2, 42),
+                Token(TokenType.RPAR, ')', 3, 1),
+            ]
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
