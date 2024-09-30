@@ -5,6 +5,10 @@ from watfunextr.tokenizer.token_type import TokenType
 from watfunextr.utils import ListNode
 
 
+def _get_mfs_from_dict_keys(d: dict, new_mfs_list: list) -> list:
+    return list(map(lambda e: new_mfs_list[e], d.keys()))
+
+
 def _is_sexp_of(token_type: TokenType):
     def specific_is_sexp_of(sexp):
         return isinstance(sexp, ListNode) and sexp.name == token_type.name

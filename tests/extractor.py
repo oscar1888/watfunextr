@@ -99,6 +99,9 @@ class Extractor(unittest.TestCase):
     def test_global_dependencies(self):
         self.positive_test('global_dependencies', '$doit')
 
+    def test_export_dependencies(self):
+        self.positive_test('export_dependencies', '$doit')
+
 
 if __name__ == '__main__':
     unittest.main()
