@@ -41,7 +41,7 @@ python3 -m watfunextr tests/operations.wasm 2
 This will create a new WAT module containing only the `$add` function and all functions it depends on (with some other
 dependencies).
 
-### Example Output
+### Output
 
 The tool will output a new WAT file named `function_<function-name-or-index>_extracted.wat` in the current directory,
 containing only the requested function and its dependencies.
