@@ -7,12 +7,27 @@ from watfunextr.tokenizer.token_type import TokenType
 from watfunextr.utils import ListNode
 
 
+def _inline_export(pt: ListNode):
+    match_token(pt.children[0], TokenType.EXPORT)
+
+    index = 1
+
+    children_left(index, pt, require_at_least_one=True)
+
+    match_token(pt.children[index], TokenType.STRING)
+    index += 1
+
+    children_left(index, pt, require_zero=True)
+
+
 def _func(pt: ListNode):
     match_token(pt.children[0], TokenType.FUNC)
 
     index = 1
     if next_child_and_is_a_token(index, pt, TokenType.NAME):
         index += 1
+
+    index = match_zero_or_more_sexp(index, pt, TokenType.EXPORT, _inline_export)
 
     if next_child_and_is_a_sexp(index, pt, TokenType.TYPE):
         func_type = pt.children[index]
@@ -65,6 +80,8 @@ def _global(pt: ListNode):
     if next_child_and_is_a_token(index, pt, TokenType.NAME):
         index += 1
 
+    index = match_zero_or_more_sexp(index, pt, TokenType.EXPORT, _inline_export)
+
     children_left(index, pt, require_at_least_one=True)
 
     if match_sexp(pt.children[index], TokenType.MUT, opt=True):
@@ -84,7 +101,32 @@ def _global(pt: ListNode):
     children_left(index, pt, require_zero=True)
 
 
-module_fields = {TokenType.TYPE: _typedef, TokenType.FUNC: _func, TokenType.GLOBAL: _global}
+def _export(pt: ListNode):
+    match_token(pt.children[0], TokenType.EXPORT)
+
+    index = 1
+
+    children_left(index, pt, require_at_least_one=True)
+
+    match_token(pt.children[index], TokenType.STRING)
+    index += 1
+
+    children_left(index, pt, require_at_least_one=True)
+
+    match_sexp(pt.children[index], {TokenType.FUNC, TokenType.GLOBAL})
+    inner_sexp = pt.children[index]
+    index2 = 1
+    children_left(index2, inner_sexp, require_at_least_one=True)
+    match_token(inner_sexp.children[index2], var)
+    index2 += 1
+    children_left(index2, inner_sexp, require_zero=True)
+    inner_sexp.name = inner_sexp.children[0].token_type.name
+    index += 1
+
+    children_left(index, pt, require_zero=True)
+
+
+module_fields = {TokenType.TYPE: _typedef, TokenType.FUNC: _func, TokenType.GLOBAL: _global, TokenType.EXPORT: _export}
 
 
 def _module(pt: ListNode):

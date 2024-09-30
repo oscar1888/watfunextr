@@ -494,6 +494,73 @@ class SExprParser(unittest.TestCase):
             )
         )
 
+    def test_unexpected_export(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/export/unexpected.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:34: unexpected 'nop'")
+
+    def test_unexpected_in_inner_sexp_export(self):
+        with self.assertRaises(ParserError) as ctx:
+            parse(tokenize(read('parser_test_cases/export/unexpected_in_inner_sexp.wat')))
+
+        self.assertEqual(str(ctx.exception), "Syntax error at 2:33: unexpected 'nop'")
+
+    def test_regular_export(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/export/regular_export.wat'))),
+            ListNode(1, 1, 3, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 33, 'EXPORT',
+                    Token(TokenType.EXPORT, 'export', 2, 6),
+                    Token(TokenType.STRING, '"function1"', 2, 13),
+                    ListNode(2, 25, 2, 32, 'FUNC',
+                        Token(TokenType.FUNC, 'func', 2, 26),
+                        Token(TokenType.NAT, '0', 2, 31)
+                    )
+                )
+            )
+        )
+
+    def test_inline_export_func(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/func/inline_export.wat'))),
+            ListNode(1, 1, 3, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 49, 'FUNC',
+                    Token(TokenType.FUNC, 'func', 2, 6),
+                    ListNode(2, 11, 2, 26, 'EXPORT',
+                        Token(TokenType.EXPORT, 'export', 2, 12),
+                        Token(TokenType.STRING, '"func1"', 2, 19),
+                    ),
+                    ListNode(2, 28, 2, 48, 'EXPORT',
+                        Token(TokenType.EXPORT, 'export', 2, 29),
+                        Token(TokenType.STRING, '"func1alias"', 2, 36),
+                    ),
+                )
+            )
+        )
+
+    def test_inline_export_global(self):
+        self.assertEqual(
+            parse(tokenize(read('parser_test_cases/global/inline_export.wat'))),
+            ListNode(1, 1, 3, 1, 'MODULE',
+                Token(TokenType.MODULE, 'module', 1, 2),
+                ListNode(2, 5, 2, 55, 'GLOBAL',
+                    Token(TokenType.GLOBAL, 'global', 2, 6),
+                    ListNode(2, 13, 2, 28, 'EXPORT',
+                        Token(TokenType.EXPORT, 'export', 2, 14),
+                        Token(TokenType.STRING, '"glob1"', 2, 21),
+                    ),
+                    ListNode(2, 30, 2, 50, 'EXPORT',
+                        Token(TokenType.EXPORT, 'export', 2, 31),
+                        Token(TokenType.STRING, '"glob1alias"', 2, 38),
+                    ),
+                    Token(TokenType.NUM_TYPE, 'i32', 2, 52)
+                )
+            )
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
