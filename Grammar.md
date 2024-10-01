@@ -14,7 +14,7 @@ The idea behind choosing a subset of the original grammar is to make a WAT modul
 <export> ::= '(' 'export' <STRING> <exkind> ')'
 <exkind> ::= '(' ('func'|'global') <var> ')'
 
-<global> ::= '(' 'global' <NAME>? <global_type> <instr>* ')'
+<global> ::= '(' 'global' <NAME>? ('(' 'export' STRING ')')* <global_type> <instr>* ')'
 
 <global_type>::= <val_type>
               |  '(' 'mut' <val_type> ')'
@@ -28,7 +28,7 @@ The idea behind choosing a subset of the original grammar is to make a WAT modul
 
 <result> ::= '(' 'result' <val_type>* ')'
 
-<func> ::= '(' 'func' <NAME>? <func_type> <local>* <instr>* ')'
+<func> ::= '(' 'func' <NAME>? ('(' 'export' STRING ')')* <func_type> <local>* <instr>* ')'
 
 <func_type> ::= ('(' 'type' <var> ')')? <param>* <result>*
 
