@@ -38,9 +38,7 @@ def _get_module_fields(pt: ListNode, token_type: TokenType) -> list[ListNode]:
 
 def _update_idxs(idxs_to_update: list, info, old2new_idxs: dict):
     for children, idx in idxs_to_update:
-        arg = children[idx].token_value
-        if arg.isdigit(): arg = int(arg)
-        mf_idx = _get_idx(arg, info, (children[idx].line, children[idx].col))
+        mf_idx = _process_name_or_idx(children[idx], info)
         children[idx] = Token(TokenType.NAT, str(old2new_idxs[mf_idx]), 1, 1)
 
 
