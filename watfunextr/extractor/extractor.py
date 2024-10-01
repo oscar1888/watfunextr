@@ -30,8 +30,8 @@ def _get_fun_with_dependencies(info_mapping: dict, fun_idx: int):
     _update_src_and_add_mfs(new_funs, info_mapping[TokenType.TYPE.name], module_fields, _typedef_handler)
     _, old2new_glob_idxs = _update_src_and_add_mfs(new_funs, info_mapping[TokenType.GLOBAL.name], module_fields, _global_handler)
     _analyze_exports(
-        search_fun_res[0], info_mapping[TokenType.FUNC.name],
-        old2new_glob_idxs, info_mapping[TokenType.GLOBAL.name],
+        {TokenType.FUNC: (search_fun_res[0], info_mapping[TokenType.FUNC.name]),
+         TokenType.GLOBAL: (old2new_glob_idxs, info_mapping[TokenType.GLOBAL.name])},
         info_mapping[TokenType.EXPORT.name][0],
         module_fields
     )
