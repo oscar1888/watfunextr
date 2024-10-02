@@ -14,7 +14,9 @@ def main():
 
     args = parser.parse_args()
     module_path = args.module_path
-    function = args.function
+
+    is_idx = args.function.isdigit()
+    function = args.function if not is_idx else int(args.function)
 
     try:
         with open(module_path, 'r') as fp:
@@ -33,7 +35,7 @@ def main():
         return
 
     try:
-        with open(f'function_{function[1:]}_extracted.wat', 'w') as fp:
+        with open(f'function_{function}_extracted.wat', 'w') as fp:
             fp.write(new_module)
     except OSError:
         print('An error occured while writing the new WAT module')
